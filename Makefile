@@ -10,13 +10,17 @@ NAME		=	ircserv
 
 DIR_OBJS	=	.objs/
 
-DIR_SRC		= 	./
+DIR_SRC		= 	srcs/
 
-DIR_HEAD 	=	./
+DIR_HEAD 	=	headers/
 
 # ---- Files ---- #
 
+HEAD_LIST	=	main.hpp \
+				Server.hpp
+
 SRCS_LST 	= 	main.cpp \
+				Server.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 
