@@ -17,7 +17,8 @@ DIR_HEAD 	=	headers/
 # ---- Files ---- #
 
 HEAD_LIST	=	main.hpp \
-				Server.hpp
+				Server.hpp \
+				errorMessages.hpp
 
 SRCS_LST 	= 	main.cpp \
 				Server.cpp

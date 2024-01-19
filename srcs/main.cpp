@@ -11,6 +11,7 @@ int	main(int ac, char **av)
 
 	Server server(av[1], password);
 	server.getServInfo();
+	server.start();
 
 }
 
