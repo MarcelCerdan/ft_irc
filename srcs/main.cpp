@@ -10,7 +10,6 @@ int	main(int ac, char **av)
 	std::string password = av[2];
 
 	Server server(av[1], password);
-	server.getServInfo();
 	server.start();
 
 }

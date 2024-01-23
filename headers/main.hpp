@@ -11,6 +11,7 @@
 # include <cstdio>
 # include <cerrno>
 # include <arpa/inet.h>
+# include <poll.h>
 
 # include "errorMessages.hpp"
 

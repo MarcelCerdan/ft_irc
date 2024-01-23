@@ -1,9 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {
-
-	memset(_servInfo, 0, sizeof *_servInfo);
-}
+Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {}
 
 Server::Server(const Server &other) {
 	*this = other;
@@ -18,9 +15,11 @@ Server &Server::operator=(const Server &other) {
 	return (*this);
 }
 
-int Server::getServInfo() {
+void Server::start() {
 
-	struct addrinfo hints;
+	errno = 0;
+
+	addrinfo hints;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_INET;
@@ -42,36 +41,45 @@ int Server::getServInfo() {
 		exit (1);
 	}
 
-	return (0);
-}
-
-void Server::start() const {
-
-	errno = 0;
-	struct sockaddr_storage client_addr;
-	socklen_t addr_size;
-
 	bind(_socket, _servInfo->ai_addr, _servInfo->ai_addrlen);
 	listen(_socket, 10);
-
-	std::cout << "Serveur listening on port : " << _port << std::endl;
 	freeaddrinfo(_servInfo);
-
-	addr_size = sizeof client_addr;
-	int	new_fd = accept(_socket, (struct sockaddr *)&client_addr, &addr_size);
 	if (errno != 0)
 	{
 		std::perror(ERR_START_SERV);
-		freeaddrinfo(_servInfo);
 		exit (1);
 	}
 
-	const char *message = "Bonjour !";
+	std::cout << "Serveur listening on port : " << _port << std::endl;
+
+	launchServLoop();
+
+	/*const char *message = "Bonjour !";
 
 	ssize_t byteSent = send(new_fd, message, std::strlen(message), MSG_NOSIGNAL);
 
 	if (byteSent < 0)
 		std::cout << "Error with send" << std::endl;
 	else
-		std::cout << "Sent " << byteSent << " bytes" << std::endl;
+		std::cout << "Sent " << byteSent << " bytes" << std::endl;*/
+}
+
+void Server::launchServLoop() const {
+
+	sockaddr_storage client_addr;
+	socklen_t addr_size;
+
+	poll(*_pfds, 10, 2500);
+	while (1)
+	{
+		addr_size = sizeof client_addr;
+		int	new_fd = accept(_socket, (struct sockaddr *)&client_addr, &addr_size);
+		if (errno != 0)
+		{
+			std::perror(ERR_START_SERV);
+			exit (1);
+		}
+
+		(void) new_fd;
+	}
 }
