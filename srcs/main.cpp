@@ -18,7 +18,7 @@ bool	checkArgs(int ac, char **av)
 {
 	if (ac != 3)
 	{
-		std::cout << ERR_ARG_NMB << std::endl;
+		std::cout << RED << ERR_ARG_NMB << RESET << std::endl;
 		return (false);
 	}
 
@@ -26,14 +26,14 @@ bool	checkArgs(int ac, char **av)
 	{
 		if (!isdigit(av[1][i]))
 		{
-			std::cout << ERR_PORT_VALUE << std::endl;
+			std::cout << RED << ERR_PORT_VALUE << RESET << std::endl;
 			return (false);
 		}
 	}
 
 	if (atoi(av[1]) < 1025 || atoi(av[1]) > 65535)
 	{
-		std::cout << ERR_PORT_VALUE << std::endl;
+		std::cout << RED << ERR_PORT_VALUE << RESET << std::endl;
 		return (false);
 	}
 

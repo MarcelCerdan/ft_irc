@@ -29,7 +29,7 @@ void Server::start() {
 	int status = getaddrinfo(NULL, _port, &hints, &_servInfo);
 	if (status != 0)
 	{
-		std::cout << ERR_GETADDINFO << gai_strerror(status) << std::endl;
+		std::cout << RED << ERR_GETADDINFO << gai_strerror(status) << RESET << std::endl;
 		exit (1);
 	}
 
@@ -50,36 +50,80 @@ void Server::start() {
 		exit (1);
 	}
 
-	std::cout << "Serveur listening on port : " << _port << std::endl;
+	std::cout << GREEN << "Server #" << _socket << " listening on port " << _port << RESET << std::endl;
 
 	launchServLoop();
-
-	/*const char *message = "Bonjour !";
-
-	ssize_t byteSent = send(new_fd, message, std::strlen(message), MSG_NOSIGNAL);
-
-	if (byteSent < 0)
-		std::cout << "Error with send" << std::endl;
-	else
-		std::cout << "Sent " << byteSent << " bytes" << std::endl;*/
 }
 
-void Server::launchServLoop() const {
+void Server::launchServLoop() {
 
-	sockaddr_storage client_addr;
-	socklen_t addr_size;
+	std::vector<pollfd>	pfds;
+	pollfd				server_pfd;
 
-	poll(*_pfds, 10, 2500);
+	server_pfd.fd = _socket;
+	server_pfd.events = POLLIN;
+	pfds.push_back(server_pfd);
+
 	while (1)
 	{
-		addr_size = sizeof client_addr;
-		int	new_fd = accept(_socket, (struct sockaddr *)&client_addr, &addr_size);
-		if (errno != 0)
+		std::vector<pollfd> newPfds;
+
+		int events = poll((pollfd *)&pfds[0], pfds.size(), -1);
+		if (events < 0)
 		{
-			std::perror(ERR_START_SERV);
+			std::cerr << ERR_POLL << std::endl;
 			exit (1);
 		}
 
-		(void) new_fd;
+		int eventsFound = 0;
+		std::vector<pollfd>::iterator it = pfds.begin();
+		while (it != pfds.end() && eventsFound < events)
+		{
+			if (it->revents & POLLIN)
+			{
+				eventsFound++;
+				if (it->fd == _socket)
+					newClient(pfds, newPfds);
+				else
+				{
+					return;
+					//handle existing connection
+				}
+			}
+			it++;
+		}
+
 	}
+}
+
+int Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
+
+	sockaddr_in client;
+	socklen_t addr_size = sizeof(sockaddr_in);
+
+	int clientSocket = accept(_socket, (sockaddr *)&client, &addr_size);
+	if (clientSocket < 0)
+	{
+		std::cerr << ERR_ACCEPT << std::endl;
+		return (1);
+	}
+	if (pfds.size() - 1 < MAX_CLIENT)
+	{
+		pollfd	clientPfd;
+		Client	newClient(clientSocket);
+
+		clientPfd.fd = clientSocket;
+		clientPfd.events = POLLIN | POLLOUT;
+		newPfds.push_back(clientPfd);
+		_clients.insert(std::pair<const int, Client>(clientSocket, newClient));
+
+		std::cout << GREEN << "Server added client #" << clientSocket << RESET << std::endl;
+	}
+	else
+	{
+		std::cout << RED << ERR_FULL_SERV << RESET << std::endl;
+		send(clientSocket, ERR_FULL_SERV, strlen(ERR_FULL_SERV) + 1, MSG_NOSIGNAL);
+		close(clientSocket);
+	}
+	return (0);
 }

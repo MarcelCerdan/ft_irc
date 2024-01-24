@@ -10,9 +10,15 @@
 # include <cstdlib>
 # include <cstdio>
 # include <cerrno>
+# include <vector>
+# include <map>
 # include <arpa/inet.h>
 # include <poll.h>
+#include <unistd.h>
 
 # include "errorMessages.hpp"
+# include "colors.hpp"
+
+# define MAX_CLIENT 10
 
 #endif
