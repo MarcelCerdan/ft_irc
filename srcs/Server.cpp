@@ -79,20 +79,20 @@ void Server::launchServLoop() {
 		std::vector<pollfd>::iterator it = pfds.begin();
 		while (it != pfds.end() && eventsFound < events)
 		{
-			if (it->revents & POLLIN)
+			if (it->revents & POLLIN) // if the event is a POLLIN -> the socket is ready to recv data
 			{
 				eventsFound++;
-				if (it->fd == _socket)
+				if (it->fd == _socket) // if the socket is the server one, we add a new client
 					newClient(pfds, newPfds);
-				else
+				else // else if the socket is that of an existing client
 				{
+					// handle already existing connection
 					return;
-					//handle existing connection
 				}
 			}
 			it++;
 		}
-
+		pfds.insert(pfds.end(), newPfds.begin(), newPfds.end());
 	}
 }
 
@@ -107,7 +107,7 @@ int Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
 		std::cerr << ERR_ACCEPT << std::endl;
 		return (1);
 	}
-	if (pfds.size() - 1 < MAX_CLIENT)
+	if (pfds.size() - 1 < MAX_CLIENT) // if server isn't full
 	{
 		pollfd	clientPfd;
 		Client	newClient(clientSocket);
@@ -117,7 +117,7 @@ int Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
 		newPfds.push_back(clientPfd);
 		_clients.insert(std::pair<const int, Client>(clientSocket, newClient));
 
-		std::cout << GREEN << "Server added client #" << clientSocket << RESET << std::endl;
+		std::cout << BLUE << "Server added client #" << clientSocket << RESET << std::endl;
 	}
 	else
 	{
