@@ -2,7 +2,6 @@
 # define SERVER_HPP
 
 # include "main.hpp"
-# include "Client.hpp"
 
 class Server {
 
@@ -20,9 +19,14 @@ public:
 
 	Server &operator=(const Server &other);
 
+	std::map<const int, Client> &getClients();
 	void	launchServLoop();
 	void	start();
-	int		newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds);
+	void	newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds);
+	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
+
 };
+
+Client *findClient(Server *server, const int fd);
 
 #endif

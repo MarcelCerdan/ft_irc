@@ -1,6 +1,8 @@
 #include "Client.hpp"
 
-Client::Client(const int socket) : _socket(socket) {}
+Client::Client(const int socket) : _socket(socket) {
+	(void) _socket;
+}
 
 Client::Client(const Client &other) : _socket(-1){
 	*this = other;
@@ -13,4 +15,11 @@ Client &Client::operator=(const Client &other) {
 	//	_socket = other._socket;
 	(void) other;
 	return (*this);
+}
+
+std::string &Client::getReadBuff() { return (_readBuff); }
+
+void Client::setReadBuff(const std::string &msg) {
+
+	_readBuff += msg;
 }

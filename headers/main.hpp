@@ -18,7 +18,10 @@
 
 # include "errorMessages.hpp"
 # include "colors.hpp"
+# include "Server.hpp"
+# include "Client.hpp"
 
 # define MAX_CLIENT 10
+# define BUFF_SIZE	512
 
 #endif

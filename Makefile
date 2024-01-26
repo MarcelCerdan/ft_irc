@@ -24,7 +24,8 @@ HEAD_LIST	=	main.hpp \
 
 SRCS_LST 	= 	main.cpp \
 				Server.cpp \
-				Client.cpp
+				Client.cpp \
+				utils.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 

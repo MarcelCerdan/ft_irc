@@ -9,5 +9,6 @@
 # define ERR_POLL "Error : poll() failed"
 # define ERR_ACCEPT "Error : accept() failed"
 # define ERR_FULL_SERV "Error : the server is already full !"
+# define ERR_RCV "Error : recv() failed"
 
 #endif

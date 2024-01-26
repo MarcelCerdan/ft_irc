@@ -15,6 +15,11 @@ Server &Server::operator=(const Server &other) {
 	return (*this);
 }
 
+std::map<const int, Client> &Server::getClients() {
+
+	return (_clients);
+}
+
 void Server::start() {
 
 	errno = 0;
@@ -96,17 +101,14 @@ void Server::launchServLoop() {
 	}
 }
 
-int Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
+void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
 
 	sockaddr_in client;
 	socklen_t addr_size = sizeof(sockaddr_in);
 
 	int clientSocket = accept(_socket, (sockaddr *)&client, &addr_size);
 	if (clientSocket < 0)
-	{
 		std::cerr << ERR_ACCEPT << std::endl;
-		return (1);
-	}
 	if (pfds.size() - 1 < MAX_CLIENT) // if server isn't full
 	{
 		pollfd	clientPfd;
@@ -125,5 +127,37 @@ int Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
 		send(clientSocket, ERR_FULL_SERV, strlen(ERR_FULL_SERV) + 1, MSG_NOSIGNAL);
 		close(clientSocket);
 	}
-	return (0);
+}
+
+void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it) {
+
+	Client *client = findClient(this, it->fd);
+	char	msg[BUFF_SIZE];
+
+	memset(msg, 0, sizeof(msg));
+	int	readCount = recv(it->fd, msg, BUFF_SIZE, 0);
+
+	if (readCount < 0)
+	{
+		std::cerr << RED << ERR_RCV << RESET << std::endl;
+		// delete Client
+		return;
+	}
+	else if (readCount == 0)
+	{
+		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << std::endl;
+		// delete Client
+		return;
+	}
+	else
+	{
+		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << msg << std::endl;
+		client->setReadBuff(msg);
+
+		if (client->getReadBuff().find("/r/n") != std::string::npos)
+		{
+			// parse readBuff to find cmds, if client isn't registered see for NICK etc...
+		}
+	}
+	
 }
