@@ -18,14 +18,18 @@ DIR_HEAD 	=	headers/
 
 HEAD_LIST	=	main.hpp \
 				Server.hpp \
-				Cleint.hpp \
+				Client.hpp \
+				Message.hpp \
 				errorMessages.hpp \
 				colors.hpp
 
 SRCS_LST 	= 	main.cpp \
 				Server.cpp \
 				Client.cpp \
-				utils.cpp
+				Message.cpp \
+				utils.cpp \
+				parseMsg.cpp \
+				commands/commands.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 

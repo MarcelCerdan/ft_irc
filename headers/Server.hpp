@@ -3,6 +3,8 @@
 
 # include "main.hpp"
 
+class Client;
+
 class Server {
 
 private:
@@ -11,6 +13,7 @@ private:
 	const std::string			_password;
 	addrinfo					*_servInfo;
 	std::map<const int, Client>	_clients;
+	std::map<const std::string, void (*)(Server *, int)>	_cmdList;
 
 public:
 	Server(char *port, const std::string &password);
@@ -20,13 +23,16 @@ public:
 	Server &operator=(const Server &other);
 
 	std::map<const int, Client> &getClients();
+
 	void	launchServLoop();
 	void	start();
-	void	newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds);
+	void	newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds);
 	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
+	int		parseMsg(int clientFd, class Message &msg);
+	void	registerClient(std::string cmd, int	clientFd);
 
 };
 
-Client *findClient(Server *server, const int fd);
+Client *findClient(Server *server, int fd);
 
 #endif

@@ -21,7 +21,12 @@ public:
 	Client &operator=(const Client &other);
 
 	void		setReadBuff(std::string const &msg);
+	void		setNickname(std::string const &newNickname);
 	std::string &getReadBuff();
+	std::string	&getNickname();
+	std::string	&getUsername();
+	bool		getGoodPass();
+	bool		getIsRegistered();
 
 };
 

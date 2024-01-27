@@ -2,12 +2,23 @@
 
 bool	checkArgs(int ac, char **av);
 
+void	signalHandler(int signal)
+{
+	if (signal == SIGINT) // shutdown the server
+		exit (0);
+	else if (signal == SIGTSTP)
+		std::cout << "Received SIGTSTP (CTRL+Z)" << std::endl;
+}
+
 int	main(int ac, char **av)
 {
 	if (!checkArgs(ac, av))
 		return (0);
 
 	std::string password = av[2];
+
+	signal(SIGINT, signalHandler);
+	signal(SIGTSTP, signalHandler);
 
 	Server server(av[1], password);
 	server.start();

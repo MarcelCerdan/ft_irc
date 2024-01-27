@@ -1,6 +1,14 @@
+
 #include "Server.hpp"
 
-Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {}
+typedef void (*cmdFunction)(Server *, int);
+
+Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {
+
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("PASS", &pass));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("NICK", &nick));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("USER", &user));
+}
 
 Server::Server(const Server &other) {
 	*this = other;
@@ -15,10 +23,7 @@ Server &Server::operator=(const Server &other) {
 	return (*this);
 }
 
-std::map<const int, Client> &Server::getClients() {
-
-	return (_clients);
-}
+std::map<const int, Client> &Server::getClients() { return (_clients); }
 
 void Server::start() {
 
@@ -92,7 +97,6 @@ void Server::launchServLoop() {
 				else // else if the socket is that of an existing client
 				{
 					// handle already existing connection
-					return;
 				}
 			}
 			it++;
@@ -101,7 +105,7 @@ void Server::launchServLoop() {
 	}
 }
 
-void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> newPfds) {
+void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 
 	sockaddr_in client;
 	socklen_t addr_size = sizeof(sockaddr_in);
@@ -137,6 +141,7 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	memset(msg, 0, sizeof(msg));
 	int	readCount = recv(it->fd, msg, BUFF_SIZE, 0);
 
+	pfds.end();
 	if (readCount < 0)
 	{
 		std::cerr << RED << ERR_RCV << RESET << std::endl;
@@ -153,9 +158,11 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	{
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << msg << std::endl;
 		client->setReadBuff(msg);
+		Message	msgRead(msg);
 
 		if (client->getReadBuff().find("/r/n") != std::string::npos)
 		{
+			parseMsg(it->fd, msgRead);
 			// parse readBuff to find cmds, if client isn't registered see for NICK etc...
 		}
 	}

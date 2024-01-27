@@ -14,12 +14,14 @@
 # include <map>
 # include <arpa/inet.h>
 # include <poll.h>
-#include <unistd.h>
+# include <unistd.h>
+# include <csignal>
 
 # include "errorMessages.hpp"
 # include "colors.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
+# include "Message.hpp"
 
 # define MAX_CLIENT 10
 # define BUFF_SIZE	512
