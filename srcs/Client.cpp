@@ -33,3 +33,5 @@ void Client::setNickname(const std::string &newNickname) {
 
 	_nickname = newNickname;
 }
+
+void Client::setGoodPass() { _goodPass = true; }

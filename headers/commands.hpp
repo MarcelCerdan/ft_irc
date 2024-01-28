@@ -1,13 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.cpp                                       :+:      :+:    :+:   */
+/*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 23:00:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/01/26 23:00:00 by mthibaul         ###   ########lyon.fr   */
+/*   Created: 2024/01/28 03:44:00 by mthibaul          #+#    #+#             */
+/*   Updated: 2024/01/28 03:44:00 by mthibaul         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
+#ifndef COMMANDS_HPP
+# define COMMANDS_HPP
 
-#include "main.hpp"
+# include "main.hpp"
+
+void pass(Server *serv, Message msg, int clientFd);
+
+#endif

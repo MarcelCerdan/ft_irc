@@ -25,6 +25,8 @@ Server &Server::operator=(const Server &other) {
 
 std::map<const int, Client> &Server::getClients() { return (_clients); }
 
+std::string const &Server::getPass() { return (_password); }
+
 void Server::start() {
 
 	errno = 0;

@@ -20,8 +20,10 @@ public:
 
 	Client &operator=(const Client &other);
 
-	void		setReadBuff(std::string const &msg);
-	void		setNickname(std::string const &newNickname);
+	void	setReadBuff(std::string const &msg);
+	void	setNickname(std::string const &newNickname);
+	void	setGoodPass();
+
 	std::string &getReadBuff();
 	std::string	&getNickname();
 	std::string	&getUsername();

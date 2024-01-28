@@ -13,7 +13,7 @@ private:
 	const std::string			_password;
 	addrinfo					*_servInfo;
 	std::map<const int, Client>	_clients;
-	std::map<const std::string, void (*)(Server *, int)>	_cmdList;
+	std::map<const std::string, void (*)(Server *, Message, int)>	_cmdList;
 
 public:
 	Server(char *port, const std::string &password);
@@ -23,13 +23,14 @@ public:
 	Server &operator=(const Server &other);
 
 	std::map<const int, Client> &getClients();
+	std::string const &getPass();
 
 	void	launchServLoop();
 	void	start();
 	void	newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds);
 	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
 	int		parseMsg(int clientFd, class Message &msg);
-	void	registerClient(std::string cmd, int	clientFd);
+	void	registerClient(Message	&msg, int	clientFd);
 
 };
 

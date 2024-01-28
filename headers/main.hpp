@@ -22,6 +22,8 @@
 # include "Server.hpp"
 # include "Client.hpp"
 # include "Message.hpp"
+# include "numericReplies.hpp"
+# include "commands.hpp"
 
 # define MAX_CLIENT 10
 # define BUFF_SIZE	512

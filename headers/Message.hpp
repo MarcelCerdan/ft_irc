@@ -37,6 +37,7 @@ public:
 	std::string &getParam();
 
 	void	splitMsg(std::string const &delimiter);
+	int		parseCmd(int cmdNmb);
 };
 
 #endif
