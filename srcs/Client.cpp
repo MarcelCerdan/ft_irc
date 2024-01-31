@@ -20,6 +20,8 @@ std::string &Client::getNickname() { return (_nickname); }
 
 std::string &Client::getUsername() { return (_username); }
 
+std::string &Client::getRealName() { return (_realName); }
+
 bool Client::getGoodPass() { return (_goodPass); }
 
 bool Client::getIsRegistered() { return (_isRegistered); }
@@ -38,3 +40,5 @@ void Client::setGoodPass() { _goodPass = true; }
 void Client::setRealName(const std::string &realName) { _realName = realName; }
 
 void Client::setUsername(const std::string &username) { _username = username; }
+
+void Client::setIsRegister() { _isRegistered = true; }

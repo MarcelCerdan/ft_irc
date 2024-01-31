@@ -20,13 +20,10 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 	for (std::size_t i = 0; i != msg.getSplitMsg().size(); i++)
 	{
-		if (!it->second.getGoodPass())
+		if (!it->second.getIsRegistered())
 		{
-			if (!it->second.getIsRegistered())
-			{
-				if (msg.parseCmd(static_cast<int>(i)) == 0)
-					registerClient(msg, clientFd);
-			}
+			if (msg.parseCmd(static_cast<int>(i)) == 0)
+				registerClient(msg, clientFd);
 		}
 	}
 	return (0);
@@ -34,13 +31,16 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 void Server::registerClient(Message &msg, int clientFd) {
 
-	std::cout << "REGISTER" << std::endl;
 	if (msg.getCmd() == "PASS")
 		pass(this, msg, clientFd);
 	else if (msg.getCmd() == "NICK")
 		nick(this, msg, clientFd);
 	else if (msg.getCmd() == "USER")
 		user(this, msg, clientFd);
+	std::cout << std::endl << "NICK : " << _clients.find(clientFd)->second.getNickname() << std::endl;
+	std::cout << "USER : " << _clients.find(clientFd)->second.getUsername() << std::endl;
+	std::cout << "REAL : " << _clients.find(clientFd)->second.getRealName() << std::endl;
+	std::cout << "Is registered : " << _clients.find(clientFd)->second.getIsRegistered() << std::endl;
 }
 
 int	Message::parseCmd(int cmdNmb) {

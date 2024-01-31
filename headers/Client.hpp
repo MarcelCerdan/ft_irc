@@ -26,10 +26,12 @@ public:
 	void	setUsername(std::string const &username);
 	void	setRealName(std::string const &realName);
 	void	setGoodPass();
+	void	setIsRegister();
 
 	std::string &getReadBuff();
 	std::string	&getNickname();
 	std::string	&getUsername();
+	std::string &getRealName();
 	bool		getGoodPass();
 	bool		getIsRegistered();
 	int 		getSocket();

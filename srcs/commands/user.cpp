@@ -15,7 +15,10 @@ void user(Server *serv, Message msg, int clientFd)
 {
 	Client	&client = serv->getClients().find(clientFd)->second;
 
-	if (client.getIsRegistered())
+	if (!client.getGoodPass())
+		std::cout << RED << "Error : please input the password first" << RESET << std::endl;
+
+	else if (client.getIsRegistered())
 		std::cout << ERR_ALREADYREGISTERED(client.getNickname()) << std::endl;
 
 	else if (msg.getParams().size() < 4)
@@ -28,5 +31,7 @@ void user(Server *serv, Message msg, int clientFd)
 	{
 		client.setUsername(msg.getParams()[0]);
 		client.setRealName(msg.getParams()[3]);
+		if (!client.getNickname().empty())
+			client.setIsRegister();
 	}
 }
