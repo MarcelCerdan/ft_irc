@@ -1,7 +1,7 @@
 
 #include "Server.hpp"
 
-typedef void (*cmdFunction)(Server *, int);
+typedef void (*cmdFunction)(Server *, Message, int);
 
 Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {
 
@@ -53,6 +53,14 @@ void Server::start() {
 		exit (1);
 	}
 
+	int optValue = 1;
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optValue, sizeof(optValue)) != 0)
+	{
+		std::perror("setsockopt");
+		freeaddrinfo(_servInfo);
+		exit (1);
+	}
+
 	bind(_socket, _servInfo->ai_addr, _servInfo->ai_addrlen);
 	listen(_socket, 10);
 	freeaddrinfo(_servInfo);
@@ -98,6 +106,7 @@ void Server::launchServLoop() {
 					newClient(pfds, newPfds);
 				else // else if the socket is that of an existing client
 				{
+					manageExistingConnection(pfds, it);
 					// handle already existing connection
 				}
 			}
@@ -158,11 +167,11 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	}
 	else
 	{
-		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << msg << std::endl;
+		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client->setReadBuff(msg);
 		Message	msgRead(msg);
 
-		if (client->getReadBuff().find("/r/n") != std::string::npos)
+		if (client->getReadBuff().find("\r\n") == std::string::npos)
 		{
 			parseMsg(it->fd, msgRead);
 			// parse readBuff to find cmds, if client isn't registered see for NICK etc...

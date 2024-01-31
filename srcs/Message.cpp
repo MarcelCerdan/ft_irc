@@ -24,7 +24,7 @@ Message &Message::operator=(const Message &other) {
 
 	if (this != &other) {
 		_cmd = other._cmd;
-		_param = other._param;
+		_params = other._params;
 		_prefix = other._prefix;
 	}
 	return (*this);
@@ -38,18 +38,39 @@ std::string &Message::getPrefix() { return (_prefix); }
 
 std::string &Message::getCmd() { return (_cmd); }
 
-std::string &Message::getParam() { return (_param); }
+std::vector<std::string> &Message::getParams() { return (_params); }
 
 void Message::splitMsg(std::string const &delimiter) {
 
-	std::size_t	pos = _fullMsg.find(delimiter);
+	std::size_t	pos;
 	std::string	substr;
 
-	while (pos != std::string::npos)
+	while ((pos = _fullMsg.find(delimiter)) != std::string::npos)
 	{
 		substr = _fullMsg.substr(0, pos);
 		_splitMsg.push_back(substr);
-		pos = _fullMsg.find(delimiter, pos);
+		_fullMsg.erase(0, pos + delimiter.length());
 	}
 
+}
+
+void Message::splitParams(std::string *params) {
+
+	std::size_t posSpace;
+	std::size_t posColon = params->find(':');
+	std::string substr;
+
+	while ((posSpace = params->find(' ')) != std::string::npos)
+	{
+		if (posColon != std::string::npos && posSpace > posColon)
+		{
+			substr = params->substr(posColon);
+			_params.push_back(substr);
+			break;
+		}
+		substr = params->substr(0, posSpace);
+		_params.push_back(substr);
+		params->erase(0, posSpace + 1);
+	}
+	_params.push_back(*params);
 }

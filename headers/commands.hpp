@@ -14,6 +14,10 @@
 
 # include "main.hpp"
 
-void pass(Server *serv, Message msg, int clientFd);
+class Server;
+
+void	pass(Server *serv, Message msg, int clientFd);
+void	nick(Server *serv, Message msg, int clientFd);
+void	user(Server *serv, Message msg, int clientFd);
 
 #endif

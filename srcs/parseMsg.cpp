@@ -18,30 +18,34 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 	msg.splitMsg("\n");
 
-	for (std::size_t i = 0; i <= msg.getSplitMsg().size(); i++)
+	for (std::size_t i = 0; i != msg.getSplitMsg().size(); i++)
 	{
 		if (!it->second.getGoodPass())
 		{
 			if (!it->second.getIsRegistered())
 			{
-				if (msg.parseCmd(static_cast<int>(i)))
+				if (msg.parseCmd(static_cast<int>(i)) == 0)
 					registerClient(msg, clientFd);
 			}
 		}
 	}
+	return (0);
 }
 
 void Server::registerClient(Message &msg, int clientFd) {
 
-	std::map<const int, Client>::iterator it = _clients.find(clientFd);
-
+	std::cout << "REGISTER" << std::endl;
 	if (msg.getCmd() == "PASS")
 		pass(this, msg, clientFd);
 	else if (msg.getCmd() == "NICK")
-
+		nick(this, msg, clientFd);
+	else if (msg.getCmd() == "USER")
+		user(this, msg, clientFd);
 }
 
 int	Message::parseCmd(int cmdNmb) {
+
+	std::string	params;
 
 	if (_splitMsg[cmdNmb].empty())
 		return (-1);
@@ -65,15 +69,30 @@ int	Message::parseCmd(int cmdNmb) {
 	else
 		_cmd.insert(0, cpy, 0, cpy.find_first_of(' '));
 
-	_param.insert(0, cpy, cpy.find_first_of(' ') + 1);
-	_param.erase(_param.find('\r'), 1);
+	if (cpy.find_first_of(' ') != std::string::npos)
+	{
+		std::cout << "PARAMS" << std::endl;
+		params.insert(0, cpy, cpy.find_first_of(' ') + 1);
+		std::cout << params << std::endl;
+		if (params.find('\r') != std::string::npos)
+			params.erase(params.find('\r'), 1);
+		splitParams(&params);
+	}
 
 	for (size_t i = 0; _cmd[i]; i++)
 		_cmd[i] = static_cast<char>(std::toupper(_cmd[i]));
 
 	std::cout << PURPLE << "PREFIX : " << _prefix << std::endl
-				<< "CMD : " << _cmd << std::endl
-				<< "PARAMs : " << _param << std::endl;
+				<< "CMD : " << _cmd << std::endl;
+	if (!_params.empty())
+	{
+		std::cout << "PARAMS : ";
+		for (std::size_t i = 0; i < _params.size(); i++)
+			std::cout << _params[i] << " | ";
+		std::cout << std::endl;
+	}
+	std::cout << "PARAMS : " << _params.size() << std::endl;
+	std::cout << RESET << std::endl;
 
 	return (0);
 }

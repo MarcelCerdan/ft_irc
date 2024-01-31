@@ -10,6 +10,7 @@ private:
 	std::string _readBuff;
 	std::string _nickname;
 	std::string	_username;
+	std::string _realName;
 	bool		_goodPass;
 	bool		_isRegistered;
 
@@ -22,6 +23,8 @@ public:
 
 	void	setReadBuff(std::string const &msg);
 	void	setNickname(std::string const &newNickname);
+	void	setUsername(std::string const &username);
+	void	setRealName(std::string const &realName);
 	void	setGoodPass();
 
 	std::string &getReadBuff();
@@ -29,6 +32,7 @@ public:
 	std::string	&getUsername();
 	bool		getGoodPass();
 	bool		getIsRegistered();
+	int 		getSocket();
 
 };
 

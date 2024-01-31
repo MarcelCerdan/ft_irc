@@ -4,6 +4,7 @@
 # include "main.hpp"
 
 class Client;
+class Message;
 
 class Server {
 

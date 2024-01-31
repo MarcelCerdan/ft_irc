@@ -17,11 +17,11 @@
 class Message {
 
 private:
-	std::string	const				_fullMsg;
+	std::string						_fullMsg;
 	std::vector<std::string> 		_splitMsg;
 	std::string 					_prefix;
 	std::string						_cmd;
-	std::string 					_param;
+	std::vector<std::string> 		_params;
 
 public:
 	Message(std::string msg);
@@ -34,9 +34,10 @@ public:
 	std::vector<std::string> &getSplitMsg();
 	std::string	&getPrefix();
 	std::string	&getCmd();
-	std::string &getParam();
+	std::vector<std::string> &getParams();
 
 	void	splitMsg(std::string const &delimiter);
+	void	splitParams(std::string *params);
 	int		parseCmd(int cmdNmb);
 };
 
