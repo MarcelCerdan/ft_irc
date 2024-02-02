@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif //FT_IRC_CLIENT_HPP
+#endif
