@@ -10,5 +10,6 @@
 # define ERR_ACCEPT "Error : accept() failed"
 # define ERR_FULL_SERV "Error : the server is already full !"
 # define ERR_RCV "Error : recv() failed"
+# define ERR_INPUTPASS "Error : please input the password first\r\n"
 
 #endif

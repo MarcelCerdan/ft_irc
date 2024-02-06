@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "classes/Server.hpp"
 
 bool	checkArgs(int ac, char **av);
 

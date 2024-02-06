@@ -1,5 +1,5 @@
 
-#include "Server.hpp"
+#include "classes/Server.hpp"
 
 typedef void (*cmdFunction)(Server *, Message, int);
 
@@ -88,7 +88,7 @@ void Server::launchServLoop() {
 	{
 		std::vector<pollfd> newPfds;
 
-		int events = poll((pollfd *)&pfds[0], pfds.size(), -1);
+		int events = poll((pollfd *)&pfds[0], (unsigned int) pfds.size(), -1);
 		if (events < 0)
 		{
 			std::cerr << ERR_POLL << std::endl;
@@ -109,6 +109,11 @@ void Server::launchServLoop() {
 					manageExistingConnection(pfds, it);
 					// handle already existing connection
 				}
+			}
+			else if (it->revents & POLLOUT) // if I can send data to the socket
+			{
+				eventsFound++;
+				managePollout(pfds, it);
 			}
 			it++;
 		}
@@ -156,26 +161,42 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	if (readCount < 0)
 	{
 		std::cerr << RED << ERR_RCV << RESET << std::endl;
-		// delete Client
+		delClient(&pfds, it);
 		return;
 	}
 	else if (readCount == 0)
 	{
-		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << std::endl;
-		// delete Client
+		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
+		delClient(&pfds, it);
 		return;
 	}
 	else
 	{
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client->setReadBuff(msg);
+		if (client->getReadBuff().find("\r\n") == std::string::npos)
+			client->setReadBuff("\r\n");
 		Message	msgRead(msg);
 
-		if (client->getReadBuff().find("\r\n") == std::string::npos)
+		if (client->getReadBuff().find("\r\n") != std::string::npos)
 		{
-			parseMsg(it->fd, msgRead);
-			// parse readBuff to find cmds, if client isn't registered see for NICK etc...
+			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
+			if (client->getReadBuff().find("\r\n") != std::string::npos)
+				client->getReadBuff().clear();
 		}
 	}
-	
+}
+
+void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it)
+{
+	Client *client = findClient(this, it->fd);
+
+	(void) pfds;
+	if (!client)
+			std::cerr << RED << "[Server] Can't find the client" << RESET << std::endl;
+	else
+	{
+		sendMsg(it->fd, client->getSendBuff());
+		client->getSendBuff().clear();
+	}
 }

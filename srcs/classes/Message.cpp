@@ -9,7 +9,7 @@
 /*   Updated: 2024/01/27 00:14:00 by mthibaul         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../headers/Message.hpp"
+#include "classes/Message.hpp"
 
 Message::Message(std::string msg) : _fullMsg(msg) {}
 

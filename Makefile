@@ -17,18 +17,18 @@ DIR_HEAD 	=	headers/
 # ---- Files ---- #
 
 HEAD_LIST	=	main.hpp \
-				Server.hpp \
-				Client.hpp \
-				Message.hpp \
+				classes/Server.hpp \
+				classes/Client.hpp \
+				classes/Message.hpp \
 				errorMessages.hpp \
 				colors.hpp \
 				commands.hpp \
 				numericReplies.hpp
 
 SRCS_LST 	= 	main.cpp \
-				Server.cpp \
-				Client.cpp \
-				Message.cpp \
+				classes/Server.cpp \
+				classes/Client.cpp \
+				classes/Message.cpp \
 				utils.cpp \
 				parseMsg.cpp \
 				commands/pass.cpp \

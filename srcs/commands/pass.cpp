@@ -13,18 +13,18 @@
 
 void pass(Server *serv, Message msg, int clientFd)
 {
-	Client *client = &serv->getClients().find(clientFd)->second;
+	Client *client = findClient(serv, clientFd);
 
-	//if (client.getGoodPass())
-	//	send(clientFd, ERR_ALREADYREGISTERED(client.getNickname()))
+	if (client->getGoodPass())
+		addToClientBuf(serv, clientFd, ERR_ALREADYREGISTERED(client->getNickname()));
 
-	if (msg.getParams().empty())
-		std::cout << ERR_NEEDMOREPARAMS(client->getNickname(), msg.getCmd()) << std::endl;
+	else if (msg.getParams().empty())
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client->getNickname(), msg.getCmd()));
 
 	else if (msg.getParams()[0] != serv->getPass())
 	{
-		std::cout << ERR_PASSWDMISMATCH(client->getNickname()) << std::endl;
-		//close connection with client;
+		addToClientBuf(serv, clientFd, ERR_PASSWDMISMATCH(client->getNickname()));
+		//close connection with client
 	}
 	else
 		client->setGoodPass();

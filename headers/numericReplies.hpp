@@ -15,7 +15,7 @@
 /*----- COMMANDS ERRORS -----*/
 
 # define ERR_NEEDMOREPARAMS(nick, command) (":localhost 461 " + nick + " " + command + " :Not enough parameters\r\n")
-# define ERR_ALREADYREGISTERED(nick) (":localhost 462 " + nick + " :You may not reregister\r\n")
+# define ERR_ALREADYREGISTERED(nick) (":localhost 462 " + nick + " :You may not reregiste\r\n")
 
 // PASS //
 # define ERR_PASSWDMISMATCH(nick) (":localhost 464 " + nick + " :Password incorrect\r\n")

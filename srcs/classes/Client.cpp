@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "classes/Client.hpp"
 
 Client::Client(const int socket) : _socket(socket), _goodPass(false) {}
 
@@ -16,6 +16,8 @@ Client &Client::operator=(const Client &other) {
 
 std::string &Client::getReadBuff() { return (_readBuff); }
 
+std::string &Client::getSendBuff() { return (_sendBuff); }
+
 std::string &Client::getNickname() { return (_nickname); }
 
 std::string &Client::getUsername() { return (_username); }
@@ -31,6 +33,11 @@ int Client::getSocket() { return (_socket); }
 void Client::setReadBuff(const std::string &msg) {
 
 	_readBuff += msg;
+}
+
+void Client::setSendBuff(const std::string &msg) {
+
+	_sendBuff += msg;
 }
 
 void Client::setNickname(const std::string &newNickname) { _nickname = newNickname; }

@@ -32,9 +32,13 @@ public:
 	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
 	int		parseMsg(int clientFd, class Message &msg);
 	void	registerClient(Message	&msg, int	clientFd);
+	void	managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
 
 };
 
 Client *findClient(Server *server, int fd);
+Client &getClient(Server *server, int fd);
+void	addToClientBuf(Server *serv, int clientFd, std::string str);
+void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
 
 #endif

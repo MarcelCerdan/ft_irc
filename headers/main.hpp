@@ -19,9 +19,9 @@
 
 # include "errorMessages.hpp"
 # include "colors.hpp"
-# include "Server.hpp"
-# include "Client.hpp"
-# include "Message.hpp"
+# include "classes/Server.hpp"
+# include "classes/Client.hpp"
+# include "classes/Message.hpp"
 # include "numericReplies.hpp"
 # include "commands.hpp"
 

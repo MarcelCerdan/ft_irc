@@ -8,6 +8,7 @@ class Client {
 private:
 	const int	_socket;
 	std::string _readBuff;
+	std::string _sendBuff;
 	std::string _nickname;
 	std::string	_username;
 	std::string _realName;
@@ -22,6 +23,7 @@ public:
 	Client &operator=(const Client &other);
 
 	void	setReadBuff(std::string const &msg);
+	void	setSendBuff(std::string const &msg);
 	void	setNickname(std::string const &newNickname);
 	void	setUsername(std::string const &username);
 	void	setRealName(std::string const &realName);
@@ -29,6 +31,7 @@ public:
 	void	setIsRegister();
 
 	std::string &getReadBuff();
+	std::string &getSendBuff();
 	std::string	&getNickname();
 	std::string	&getUsername();
 	std::string &getRealName();
@@ -38,5 +41,6 @@ public:
 
 };
 
+int	sendMsg(int clientFd, std::string &buf);
 
 #endif

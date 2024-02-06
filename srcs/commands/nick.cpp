@@ -13,22 +13,23 @@
 
 void nick(Server *serv, Message msg, int clientFd)
 {
-	Client &client = serv->getClients().find(clientFd)->second;
+	Client *client = findClient(serv, clientFd);
 	std::vector<std::string> params = msg.getParams();
 
-	if (!client.getGoodPass())
-		std::cout << RED << "Error : please input the password first" << RESET << std::endl;
+	if (!client->getGoodPass())
+		addToClientBuf(serv, clientFd, "Error : please input the password first");
 
 	else if (params.empty())
-		std::cout << ERR_NONICKNAMEGIVEN(client.getNickname()) << std::endl;
+		addToClientBuf(serv, clientFd, ERR_NONICKNAMEGIVEN(client->getNickname()));
 
 	else if (params[0].find_first_of("#:") == 0)
-		std::cout << ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]) << std::endl;
+		addToClientBuf(serv, clientFd, ERR_ERRONEUSNICKNAME(client->getNickname(), params[0]));
 
 	else
 	{
-		client.setNickname(params[0]);
-		if (!client.getUsername().empty())
-			client.setIsRegister();
+		client->setNickname(params[0]);
+		if (!client->getUsername().empty())
+			client->setIsRegister();
 	}
+
 }
