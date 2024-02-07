@@ -18,7 +18,7 @@ Message::Message(const Message &other) {
 	*this = other;
 }
 
-Message::~Message(void) {}
+Message::~Message() {}
 
 Message &Message::operator=(const Message &other) {
 
@@ -57,20 +57,29 @@ void Message::splitMsg(std::string const &delimiter) {
 void Message::splitParams(std::string *params) {
 
 	std::size_t posSpace;
-	std::size_t posColon = params->find(':');
 	std::string substr;
+	std::size_t posColon;
 
 	while ((posSpace = params->find(' ')) != std::string::npos)
 	{
+		posColon = params->find(':');
 		if (posColon != std::string::npos && posSpace > posColon)
 		{
 			substr = params->substr(posColon);
 			_params.push_back(substr);
-			break;
+			return;
 		}
 		substr = params->substr(0, posSpace);
 		_params.push_back(substr);
 		params->erase(0, posSpace + 1);
 	}
-	_params.push_back(*params);
+
+	posColon = params->find(':');
+	if (posColon != std::string::npos)
+	{
+		substr = params->substr(posColon + 1);
+		_params.push_back(substr);
+	}
+	else
+		_params.push_back(*params);
 }

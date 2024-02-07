@@ -20,6 +20,7 @@ HEAD_LIST	=	main.hpp \
 				classes/Server.hpp \
 				classes/Client.hpp \
 				classes/Message.hpp \
+				classes/Channel.hpp \
 				errorMessages.hpp \
 				colors.hpp \
 				commands.hpp \
@@ -29,11 +30,13 @@ SRCS_LST 	= 	main.cpp \
 				classes/Server.cpp \
 				classes/Client.cpp \
 				classes/Message.cpp \
+				classes/Channel.cpp \
 				utils.cpp \
 				parseMsg.cpp \
 				commands/pass.cpp \
 				commands/nick.cpp \
-				commands/user.cpp
+				commands/user.cpp \
+				commands/join.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 

@@ -20,10 +20,12 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 	for (std::size_t i = 0; i != msg.getSplitMsg().size(); i++)
 	{
-		if (!it->second.getIsRegistered())
+		if (msg.parseCmd(static_cast<int>(i)) == 0)
 		{
-			if (msg.parseCmd(static_cast<int>(i)) == 0)
+			if (!it->second.getIsRegistered())
 				registerClient(msg, clientFd);
+			else
+				_cmdList[msg.getCmd()](this, msg, clientFd);
 		}
 	}
 	return (0);
@@ -31,6 +33,7 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 void Server::registerClient(Message &msg, int clientFd) {
 
+	msg.checkCmd();
 	if (msg.getCmd() == "PASS")
 		pass(this, msg, clientFd);
 	else if (msg.getCmd() == "NICK")
@@ -71,9 +74,7 @@ int	Message::parseCmd(int cmdNmb) {
 
 	if (cpy.find_first_of(' ') != std::string::npos)
 	{
-		std::cout << "PARAMS" << std::endl;
 		params.insert(0, cpy, cpy.find_first_of(' ') + 1);
-		std::cout << params << std::endl;
 		if (params.find('\r') != std::string::npos)
 			params.erase(params.find('\r'), 1);
 		splitParams(&params);
@@ -82,7 +83,7 @@ int	Message::parseCmd(int cmdNmb) {
 	for (size_t i = 0; _cmd[i]; i++)
 		_cmd[i] = static_cast<char>(std::toupper(_cmd[i]));
 
-	std::cout << PURPLE << "PREFIX : " << _prefix << std::endl
+	/*std::cout << PURPLE << "PREFIX : " << _prefix << std::endl
 				<< "CMD : " << _cmd << std::endl;
 	if (!_params.empty())
 	{
@@ -92,7 +93,22 @@ int	Message::parseCmd(int cmdNmb) {
 		std::cout << std::endl;
 	}
 	std::cout << "PARAMS : " << _params.size() << std::endl;
-	std::cout << RESET << std::endl;
+	std::cout << RESET << std::endl;*/
 
 	return (0);
+}
+
+void	Message::checkCmd()
+{
+	if (_cmd.find("NICK") != std::string::npos && _cmd.find("PASS") != std::string::npos)
+	{
+		std::cout << "COMMAND : " << _cmd << std::endl;
+		_cmd = "NICK";
+		_params.erase(_params.begin());
+	}
+	else if (_cmd.find("USER") != std::string::npos && _cmd.find("NICK") != std::string::npos)
+	{
+		_cmd = "USER";
+		_params.erase(_params.begin());
+	}
 }

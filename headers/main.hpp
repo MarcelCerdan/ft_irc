@@ -24,6 +24,7 @@
 # include "classes/Message.hpp"
 # include "numericReplies.hpp"
 # include "commands.hpp"
+# include "classes/Channel.hpp"
 
 # define MAX_CLIENT 10
 # define BUFF_SIZE	512

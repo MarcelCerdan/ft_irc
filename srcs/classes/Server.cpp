@@ -8,6 +8,7 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("PASS", &pass));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("NICK", &nick));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("USER", &user));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("JOIN", &join));
 }
 
 Server::Server(const Server &other) {
@@ -26,6 +27,13 @@ Server &Server::operator=(const Server &other) {
 std::map<const int, Client> &Server::getClients() { return (_clients); }
 
 std::string const &Server::getPass() { return (_password); }
+
+std::map<const std::string, Channel> &Server::getChannels() { return (_channels); }
+
+void Server::addChannel(std::string const &name, Channel &channel) {
+
+	_channels.insert(std::pair<const std::string, Channel>(name, channel));
+}
 
 void Server::start() {
 

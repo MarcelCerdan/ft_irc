@@ -17,12 +17,12 @@ void nick(Server *serv, Message msg, int clientFd)
 	std::vector<std::string> params = msg.getParams();
 
 	if (!client->getGoodPass())
-		addToClientBuf(serv, clientFd, "Error : please input the password first");
+		addToClientBuf(serv, clientFd, "Error : please input the password first\r\n");
 
 	else if (params.empty())
 		addToClientBuf(serv, clientFd, ERR_NONICKNAMEGIVEN(client->getNickname()));
 
-	else if (params[0].find_first_of("#:") == 0)
+	else if (params[0].find_first_of("#:") != std::string::npos)
 		addToClientBuf(serv, clientFd, ERR_ERRONEUSNICKNAME(client->getNickname(), params[0]));
 
 	else

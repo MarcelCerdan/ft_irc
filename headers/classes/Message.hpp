@@ -38,6 +38,7 @@ public:
 
 	void	splitMsg(std::string const &delimiter);
 	void	splitParams(std::string *params);
+	void	checkCmd();
 	int		parseCmd(int cmdNmb);
 };
 

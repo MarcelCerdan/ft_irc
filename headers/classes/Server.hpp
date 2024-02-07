@@ -5,6 +5,7 @@
 
 class Client;
 class Message;
+class Channel;
 
 class Server {
 
@@ -15,6 +16,7 @@ private:
 	addrinfo					*_servInfo;
 	std::map<const int, Client>	_clients;
 	std::map<const std::string, void (*)(Server *, Message, int)>	_cmdList;
+	std::map<const std::string, Channel>	_channels;
 
 public:
 	Server(char *port, const std::string &password);
@@ -25,6 +27,9 @@ public:
 
 	std::map<const int, Client> &getClients();
 	std::string const &getPass();
+	std::map<const std::string, Channel> &getChannels();
+
+	void	addChannel(std::string const &name, Channel &channel);
 
 	void	launchServLoop();
 	void	start();
