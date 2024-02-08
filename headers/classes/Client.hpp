@@ -4,7 +4,6 @@
 # include "main.hpp"
 
 class Client {
-
 private:
 	const int	_socket;
 	std::string _readBuff;

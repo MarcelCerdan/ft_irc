@@ -1,20 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Message.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/27 00:14:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/01/27 00:14:00 by mthibaul         ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
 #include "classes/Message.hpp"
 
 Message::Message(std::string msg) : _fullMsg(msg) {}
 
 Message::Message(const Message &other) {
-
 	*this = other;
 }
 
@@ -41,12 +29,10 @@ std::string &Message::getCmd() { return (_cmd); }
 std::vector<std::string> &Message::getParams() { return (_params); }
 
 void Message::splitMsg(std::string const &delimiter) {
-
 	std::size_t	pos;
 	std::string	substr;
 
-	while ((pos = _fullMsg.find(delimiter)) != std::string::npos)
-	{
+	while ((pos = _fullMsg.find(delimiter)) != std::string::npos) {
 		substr = _fullMsg.substr(0, pos);
 		_splitMsg.push_back(substr);
 		_fullMsg.erase(0, pos + delimiter.length());
@@ -55,7 +41,6 @@ void Message::splitMsg(std::string const &delimiter) {
 }
 
 void Message::splitParams(std::string *params) {
-
 	std::size_t posSpace;
 	std::string substr;
 	std::size_t posColon;
@@ -63,11 +48,10 @@ void Message::splitParams(std::string *params) {
 	while ((posSpace = params->find(' ')) != std::string::npos)
 	{
 		posColon = params->find(':');
-		if (posColon != std::string::npos && posSpace > posColon)
-		{
+		if (posColon != std::string::npos && posSpace > posColon) {
 			substr = params->substr(posColon);
 			_params.push_back(substr);
-			return;
+			return ;
 		}
 		substr = params->substr(0, posSpace);
 		_params.push_back(substr);
@@ -75,8 +59,7 @@ void Message::splitParams(std::string *params) {
 	}
 
 	posColon = params->find(':');
-	if (posColon != std::string::npos)
-	{
+	if (posColon != std::string::npos) {
 		substr = params->substr(posColon + 1);
 		_params.push_back(substr);
 	}

@@ -1,21 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Channel.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/07 12:53:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/07 12:53:00 by mthibaul         ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
 # include "main.hpp"
 
 class Channel {
-
 private:
 	std::string	const				_name;
 	std::string						_topic;

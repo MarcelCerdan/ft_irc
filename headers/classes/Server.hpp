@@ -35,9 +35,9 @@ public:
 	void	start();
 	void	newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds);
 	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
-	int		parseMsg(int clientFd, class Message &msg);
 	void	registerClient(Message	&msg, int	clientFd);
 	void	managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
+	int		parseMsg(int clientFd, class Message &msg);
 
 };
 

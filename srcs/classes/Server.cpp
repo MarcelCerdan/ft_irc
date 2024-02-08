@@ -18,7 +18,6 @@ Server::Server(const Server &other) {
 Server::~Server(void) {}
 
 Server &Server::operator=(const Server &other) {
-
 	if (this != &other)
 		_port = other._port;
 	return (*this);
@@ -47,23 +46,20 @@ void Server::start() {
 	hints.ai_flags = AI_PASSIVE;
 
 	int status = getaddrinfo(NULL, _port, &hints, &_servInfo);
-	if (status != 0)
-	{
+	if (status != 0) {
 		std::cout << RED << ERR_GETADDINFO << gai_strerror(status) << RESET << std::endl;
 		exit (1);
 	}
 
 	_socket = socket(_servInfo->ai_family, _servInfo->ai_socktype, _servInfo->ai_protocol);
-	if (_socket < 0)
-	{
+	if (_socket < 0) {
 		std::perror(ERR_SOCKET);
 		freeaddrinfo(_servInfo);
 		exit (1);
 	}
 
 	int optValue = 1;
-	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optValue, sizeof(optValue)) != 0)
-	{
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optValue, sizeof(optValue)) != 0) {
 		std::perror("setsockopt");
 		freeaddrinfo(_servInfo);
 		exit (1);
@@ -72,8 +68,7 @@ void Server::start() {
 	bind(_socket, _servInfo->ai_addr, _servInfo->ai_addrlen);
 	listen(_socket, 10);
 	freeaddrinfo(_servInfo);
-	if (errno != 0)
-	{
+	if (errno != 0) {
 		std::perror(ERR_START_SERV);
 		exit (1);
 	}
@@ -92,34 +87,28 @@ void Server::launchServLoop() {
 	server_pfd.events = POLLIN;
 	pfds.push_back(server_pfd);
 
-	while (1)
-	{
+	while (1) {
 		std::vector<pollfd> newPfds;
 
 		int events = poll((pollfd *)&pfds[0], (unsigned int) pfds.size(), -1);
-		if (events < 0)
-		{
+		if (events < 0) {
 			std::cerr << ERR_POLL << std::endl;
 			exit (1);
 		}
 
 		int eventsFound = 0;
 		std::vector<pollfd>::iterator it = pfds.begin();
-		while (it != pfds.end() && eventsFound < events)
-		{
-			if (it->revents & POLLIN) // if the event is a POLLIN -> the socket is ready to recv data
-			{
+		while (it != pfds.end() && eventsFound < events) {
+			if (it->revents & POLLIN) { // if the event is a POLLIN -> the socket is ready to recv data
 				eventsFound++;
 				if (it->fd == _socket) // if the socket is the server one, we add a new client
 					newClient(pfds, newPfds);
-				else // else if the socket is that of an existing client
-				{
+				else { // else if the socket is that of an existing client
 					manageExistingConnection(pfds, it);
 					// handle already existing connection
 				}
 			}
-			else if (it->revents & POLLOUT) // if I can send data to the socket
-			{
+			else if (it->revents & POLLOUT) { // if I can send data to the socket
 				eventsFound++;
 				managePollout(pfds, it);
 			}
@@ -130,15 +119,13 @@ void Server::launchServLoop() {
 }
 
 void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
-
 	sockaddr_in client;
 	socklen_t addr_size = sizeof(sockaddr_in);
 
 	int clientSocket = accept(_socket, (sockaddr *)&client, &addr_size);
 	if (clientSocket < 0)
 		std::cerr << ERR_ACCEPT << std::endl;
-	if (pfds.size() - 1 < MAX_CLIENT) // if server isn't full
-	{
+	if (pfds.size() - 1 < MAX_CLIENT) { // if server isn't full
 		pollfd	clientPfd;
 		Client	newClient(clientSocket);
 
@@ -149,8 +136,7 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 
 		std::cout << BLUE << "Server added client #" << clientSocket << RESET << std::endl;
 	}
-	else
-	{
+	else {
 		std::cout << RED << ERR_FULL_SERV << RESET << std::endl;
 		send(clientSocket, ERR_FULL_SERV, strlen(ERR_FULL_SERV) + 1, MSG_NOSIGNAL);
 		close(clientSocket);
@@ -166,28 +152,29 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	int	readCount = recv(it->fd, msg, BUFF_SIZE, 0);
 
 	pfds.end();
-	if (readCount < 0)
-	{
+	if (readCount < 0) {
 		std::cerr << RED << ERR_RCV << RESET << std::endl;
 		delClient(&pfds, it);
 		return;
 	}
-	else if (readCount == 0)
-	{
+	else if (readCount == 0) {
 		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
 		delClient(&pfds, it);
 		return;
 	}
-	else
-	{
+	else {
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
 		if (client.getReadBuff().find("\r\n") == std::string::npos)
 			client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
+<<<<<<< HEAD
 		if (client.getReadBuff().find("\r\n") != std::string::npos)
 		{
+=======
+		if (client->getReadBuff().find("\r\n") != std::string::npos) {
+>>>>>>> 66b9c7f23469ab4db8483e4b22881525f788a9d3
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
 			if (client.getReadBuff().find("\r\n") != std::string::npos)
 				client.getReadBuff().clear();

@@ -9,7 +9,7 @@
 /*   Updated: 2024/02/07 12:53:00 by mthibaul         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../headers/classes/Channel.hpp"
+#include "classes/Channel.hpp"
 
 Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name) {
 
