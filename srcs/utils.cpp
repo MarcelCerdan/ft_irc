@@ -12,21 +12,19 @@
 
 #include "main.hpp"
 
-Client *findClient(Server *server, const int fd)
+Client &findClient(Server *server, const int fd)
 {
 	std::map<const int, Client> &clients_list = server->getClients();
 	std::map<const int, Client>::iterator it = clients_list.find(fd);
 
-	if (it == clients_list.end())
-		return (NULL);
-	return (&it->second);
+	return (it->second);
 }
 
 void	addToClientBuf(Server *serv, int const clientFd, std::string str)
 {
-	Client *client = findClient(serv, clientFd);
+	Client &client = findClient(serv, clientFd);
 
-	client->setSendBuff(str);
+	client.setSendBuff(str);
 }
 
 int	sendMsg(int const clientFd, std::string &buf)

@@ -13,10 +13,10 @@
 
 Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name) {
 
-	Client *client = findClient(serv, clientFd);
+	Client &client = findClient(serv, clientFd);
 
 	_chanOps.clear();
-	_chanOps.insert(std::pair<const int, Client *>(clientFd, client));
+	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
 }
 
@@ -43,7 +43,7 @@ std::string Channel::getName() { return (_name); }
 
 std::vector<Client *> &Channel::getMembers() { return (_members); }
 
-std::map<const int, Client *> &Channel::getChanOps() { return (_chanOps); }
+std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
 
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
@@ -52,12 +52,12 @@ void Channel::addMember(Client *newMember) {
 	_members.push_back(newMember);
 }
 
-void Channel::addChanOps(const int clientFd, Client *newChanOps) {
+void Channel::addChanOps(const int clientFd, Client &newChanOps) {
 
-	_chanOps.insert(std::pair<const int, Client *>(clientFd, newChanOps));
+	_chanOps.insert(std::pair<const int, Client &>(clientFd, newChanOps));
 }
 
-Channel	*findChannel(Server *serv, std::string const &name)
+/*std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name)
 {
 	std::map<const std::string, Channel> channelsList = serv->getChannels();
 	std::map<const std::string, Channel>::iterator it = channelsList.find(name);
@@ -66,5 +66,5 @@ Channel	*findChannel(Server *serv, std::string const &name)
 	if (it == channelsList.end())
 		return (NULL);
 
-	return (&it->second);
-}
+	return (it);
+}*/

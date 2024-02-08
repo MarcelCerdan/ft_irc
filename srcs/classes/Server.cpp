@@ -28,11 +28,11 @@ std::map<const int, Client> &Server::getClients() { return (_clients); }
 
 std::string const &Server::getPass() { return (_password); }
 
-std::map<const std::string, Channel> &Server::getChannels() { return (_channels); }
+std::map<const std::string, Channel &> &Server::getChannels() { return (_channels); }
 
 void Server::addChannel(std::string const &name, Channel &channel) {
 
-	_channels.insert(std::pair<const std::string, Channel>(name, channel));
+	_channels.insert(std::pair<const std::string, Channel &>(name, channel));
 }
 
 void Server::start() {
@@ -159,7 +159,7 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 
 void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it) {
 
-	Client *client = findClient(this, it->fd);
+	Client &client = findClient(this, it->fd);
 	char	msg[BUFF_SIZE];
 
 	memset(msg, 0, sizeof(msg));
@@ -181,30 +181,30 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else
 	{
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
-		client->setReadBuff(msg);
-		if (client->getReadBuff().find("\r\n") == std::string::npos)
-			client->setReadBuff("\r\n");
+		client.setReadBuff(msg);
+		if (client.getReadBuff().find("\r\n") == std::string::npos)
+			client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
-		if (client->getReadBuff().find("\r\n") != std::string::npos)
+		if (client.getReadBuff().find("\r\n") != std::string::npos)
 		{
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
-			if (client->getReadBuff().find("\r\n") != std::string::npos)
-				client->getReadBuff().clear();
+			if (client.getReadBuff().find("\r\n") != std::string::npos)
+				client.getReadBuff().clear();
 		}
 	}
 }
 
 void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it)
 {
-	Client *client = findClient(this, it->fd);
+	Client &client = findClient(this, it->fd);
 
 	(void) pfds;
-	if (!client)
-			std::cerr << RED << "[Server] Can't find the client" << RESET << std::endl;
-	else
+	/*if (!client)
+			std::cerr << RED << "[Server] Can't find the client" << RESET << std::endl;*/
+	//else
 	{
-		sendMsg(it->fd, client->getSendBuff());
-		client->getSendBuff().clear();
+		sendMsg(it->fd, client.getSendBuff());
+		client.getSendBuff().clear();
 	}
 }

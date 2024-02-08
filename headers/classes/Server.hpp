@@ -16,7 +16,7 @@ private:
 	addrinfo					*_servInfo;
 	std::map<const int, Client>	_clients;
 	std::map<const std::string, void (*)(Server *, Message, int)>	_cmdList;
-	std::map<const std::string, Channel>	_channels;
+	std::map<const std::string, Channel &>	_channels;
 
 public:
 	Server(char *port, const std::string &password);
@@ -27,7 +27,7 @@ public:
 
 	std::map<const int, Client> &getClients();
 	std::string const &getPass();
-	std::map<const std::string, Channel> &getChannels();
+	std::map<const std::string, Channel &> &getChannels();
 
 	void	addChannel(std::string const &name, Channel &channel);
 
@@ -41,7 +41,7 @@ public:
 
 };
 
-Client *findClient(Server *server, int fd);
+Client &findClient(Server *server, int fd);
 Client &getClient(Server *server, int fd);
 void	addToClientBuf(Server *serv, int clientFd, std::string str);
 void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);

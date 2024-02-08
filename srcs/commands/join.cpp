@@ -13,48 +13,58 @@
 
 void join(Server *serv, Message msg, int clientFd)
 {
-	Client *client = findClient(serv, clientFd);
-	Channel *channel = findChannel(serv, msg.getParams()[0]);
+	std::map<const std::string, Channel &> channelsList = serv->getChannels();
+	std::map<const std::string, Channel &>::iterator it = channelsList.find(msg.getParams()[0]);
 
+	Client *client = &findClient(serv, clientFd);
+	if (it == channelsList.end())
+		std::cout << "Pas ok" << std::endl;
 	if (msg.getParams().empty())
+	{
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client->getNickname(), msg.getCmd()));
+		return;
+	}
 
-	else if (!channel)
+	if (it == channelsList.end())
 	{
 		Channel newChannel(msg.getParams()[0], serv, clientFd);
-		serv->addChannel(msg.getParams()[0], newChannel);
-		channel = &newChannel;
+		Channel &newChanRef = newChannel;
+		serv->addChannel(msg.getParams()[0], newChanRef);
+		channelsList = serv->getChannels();
+		it = channelsList.find(msg.getParams()[0]);
 	}
 	else
 	{
-		channel->addMember(client);
+		std::cout << client->getNickname() << std::endl;
+		it->second.addMember(client);
 	}
 
-	addToClientBuf(serv, clientFd, JOINCHANNEL(client->getNickname(), channel->getName()));
-	if (channel->getTopic().empty())
-		addToClientBuf(serv, clientFd, RPL_NOTOPIC(client->getNickname(), channel->getName()));
+	Channel &channel = it->second;
+	addToClientBuf(serv, clientFd, JOINCHANNEL(client->getNickname(), channel.getName()));
+	if (channel.getTopic().empty())
+		addToClientBuf(serv, clientFd, RPL_NOTOPIC(client->getNickname(), channel.getName()));
 	else
-		addToClientBuf(serv, clientFd, RPL_TOPIC(client->getNickname(), channel->getName(), channel->getTopic()));
+		addToClientBuf(serv, clientFd, RPL_TOPIC(client->getNickname(), channel.getName(), channel.getTopic()));
 
-	addToClientBuf(serv, clientFd, RPL_NAMREPLY(client->getNickname(), "=", channel->getName()));
-	std::map<const int, Client *>::iterator it = channel->getChanOps().begin();
+	addToClientBuf(serv, clientFd, RPL_NAMREPLY(client->getNickname(), "=", channel.getName()));
+	std::map<const int, Client &>::iterator it_chanOps = channel.getChanOps().begin();
 	std::size_t i = 0;
-	while ( i != channel->getChanOps().size())
+	while ( i != channel.getChanOps().size())
 	{
-		if (it->first > 2)
-			addToClientBuf(serv, clientFd, "@" + it->second->getNickname() + " ");
-		it++;
+		if (it_chanOps->first > 2)
+			addToClientBuf(serv, clientFd, "@" + it_chanOps->second.getNickname() + " ");
+		it_chanOps++;
 		i++;
 	}
-	if (!channel->getMembers().empty())
+	if (!channel.getMembers().empty())
 	{
 		i = 0;
-		while (i < channel->getMembers().size())
+		while (i < channel.getMembers().size())
 		{
-			addToClientBuf(serv, clientFd, channel->getMembers()[i]->getNickname() + " ");
+			addToClientBuf(serv, clientFd, channel.getMembers()[i]->getNickname() + " ");
 			i++;
 		}
 	}
 	addToClientBuf(serv, clientFd, "\r\n");
-	addToClientBuf(serv, clientFd, RPL_ENDOFNAMES(client->getNickname(), channel->getName()));
+	addToClientBuf(serv, clientFd, RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
 }
