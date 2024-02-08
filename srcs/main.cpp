@@ -29,8 +29,7 @@ bool	checkArgs(int ac, char **av) {
 		return (false);
 	}
 
-	for (int i = 0; av[1][i]; i++)
-	{
+	for (int i = 0; av[1][i]; i++) {
 		if (!isdigit(av[1][i])) {
 			std::cout << RED << ERR_PORT_VALUE << RESET << std::endl;
 			return (false);
