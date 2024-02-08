@@ -28,5 +28,7 @@
 
 # define MAX_CLIENT 10
 # define BUFF_SIZE	512
+# define MIN_PORT	1025
+# define MAX_PORT	65535
 
 #endif
