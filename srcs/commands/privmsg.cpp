@@ -22,10 +22,13 @@ The target can be a channel name or a user nickname.
 Handle bans, exceptions, and other channel-specific conditions.
 If the tharget is a user who is away, send an RPL_AWAY response.
 -handle errors
--if target start with dollar characterm broadcast message to all clients on one or multiple servers.
+-if target start with dollar character broadcast message to all clients on one or multiple servers.
 
 */
 
 void privmsg(Server *serv, Message msg, int clientFd) {
-	
+	Client &client = findClient(serv, clientFd);
+
+	std::cout << "client privmsg: " << client.getNickname() << std::endl;
+	std::cout << "msg full msg privmsh: " << msg.getFullMsg() << std::endl;
 }
