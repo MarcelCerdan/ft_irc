@@ -1,8 +1,6 @@
 
 #include "classes/Server.hpp"
 
-typedef void (*cmdFunction)(Server *, Message, int);
-
 Server::Server(char *port, const std::string &password) : _port(port), _socket(-1), _password(password) {
 
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("PASS", &pass));
@@ -27,11 +25,11 @@ std::map<const int, Client> &Server::getClients() { return (_clients); }
 
 std::string const &Server::getPass() { return (_password); }
 
-std::map<const std::string, Channel &> &Server::getChannels() { return (_channels); }
+std::map<const std::string, Channel> &Server::getChannels() { return (_channels); }
 
-void Server::addChannel(std::string const &name, Channel &channel) {
+void Server::addChannel(Channel channel) {
 
-	_channels.insert(std::pair<const std::string, Channel &>(name, channel));
+	_channels.insert(std::pair<const std::string, Channel>(channel.getName(), channel));
 }
 
 void Server::start() {
@@ -169,12 +167,8 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 			client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
-<<<<<<< HEAD
 		if (client.getReadBuff().find("\r\n") != std::string::npos)
 		{
-=======
-		if (client->getReadBuff().find("\r\n") != std::string::npos) {
->>>>>>> 66b9c7f23469ab4db8483e4b22881525f788a9d3
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
 			if (client.getReadBuff().find("\r\n") != std::string::npos)
 				client.getReadBuff().clear();

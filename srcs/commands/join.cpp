@@ -13,12 +13,10 @@
 
 void join(Server *serv, Message msg, int clientFd)
 {
-	std::map<const std::string, Channel &> channelsList = serv->getChannels();
-	std::map<const std::string, Channel &>::iterator it = channelsList.find(msg.getParams()[0]);
+	std::map<const std::string, Channel> &channelsList = serv->getChannels();
+	std::map<const std::string, Channel>::iterator it = channelsList.find(msg.getParams()[0]);
 
 	Client *client = &findClient(serv, clientFd);
-	if (it == channelsList.end())
-		std::cout << "Pas ok" << std::endl;
 	if (msg.getParams().empty())
 	{
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client->getNickname(), msg.getCmd()));
@@ -28,16 +26,12 @@ void join(Server *serv, Message msg, int clientFd)
 	if (it == channelsList.end())
 	{
 		Channel newChannel(msg.getParams()[0], serv, clientFd);
-		Channel &newChanRef = newChannel;
-		serv->addChannel(msg.getParams()[0], newChanRef);
+		serv->addChannel(newChannel);
 		channelsList = serv->getChannels();
 		it = channelsList.find(msg.getParams()[0]);
 	}
 	else
-	{
-		std::cout << client->getNickname() << std::endl;
 		it->second.addMember(client);
-	}
 
 	Channel &channel = it->second;
 	addToClientBuf(serv, clientFd, JOINCHANNEL(client->getNickname(), channel.getName()));

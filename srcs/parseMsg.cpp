@@ -25,7 +25,13 @@ int Server::parseMsg(int clientFd, Message &msg) {
 			if (!it->second.getIsRegistered())
 				registerClient(msg, clientFd);
 			else
-				_cmdList[msg.getCmd()](this, msg, clientFd);
+			{
+				for(std::map<const std::string, cmdFunction>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
+				{
+					if (it->first == msg.getCmd())
+						it->second(this, msg, clientFd);
+				}
+			}
 		}
 	}
 	return (0);
