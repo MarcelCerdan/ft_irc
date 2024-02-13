@@ -23,7 +23,7 @@
 // NICK //
 # define ERR_NONICKNAMEGIVEN(nick) (":localhost 431 " + nick + " :No nickname given\r\n")
 # define ERR_ERRONEUSNICKNAME(nick, new_nick) (":localhost 432 " + nick + " " + new_nick + " :Erroneus nickname\r\n")
-# define ERR_NICKNAMEINUSE(nick, new_nick) ("localhost 433 " + nick + " " + new_nick + " :Nickname is already in use\r\n")
+# define ERR_NICKNAMEINUSE(nick, new_nick) (":localhost 433 " + nick + " " + new_nick + " :Nickname is already in use\r\n")
 
 // JOIN //
 # define ERR_BADCHANMASK(channel) (channel + " :Bad channel name\r\n")
