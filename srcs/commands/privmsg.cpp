@@ -52,7 +52,7 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 	std::vector<std::string> stringClients;
 	std::string	message;
 	std::map<const int, Client> &clients = serv->getClients();
-	std::map<const std::string, Channel> channels = serv->getChannels();
+	std::map<const std::string, Channel> &channels = serv->getChannels();
 
 	if (msg.getParams().size() < 2) {
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
@@ -71,9 +71,27 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 
 	for (std::vector<std::string>::iterator it1 = stringClients.begin(); it1 != stringClients.end(); it1++) {
 		std::string targetClientName = *it1;
-		for (std::map<const int, Client>::iterator it2 = clients.begin(); it2 != clients.end(); it2++) {
-			if (targetClientName == it2->second.getNickname()) {
-				addToClientBuf(serv, it2->second.getSocket(), message + "\r\n");
+		for (std::map<const int, Client>::iterator itClient = clients.begin(); itClient != clients.end(); itClient++) {
+			if (targetClientName == itClient->second.getNickname()) {
+				addToClientBuf(serv, itClient->second.getSocket(), message + "\r\n");
+			}
+		}
+	}
+
+	for (std::vector<std::string>::iterator it1 = stringChannels.begin(); it1 != stringChannels.end(); it1++) {
+		std::string targetChannelName = *it1;
+		std::map<std::string, Channel>::iterator itChannel = channels.find(targetChannelName);			
+		std::cout << "test1 - targetChannelName: " << targetChannelName << std::endl;
+		if (itChannel != channels.end()) {
+			std::vector<Client *> &members = itChannel->second.getMembers();
+			std::cout << "Members of channel " << targetChannelName << ": ";
+        for (size_t j = 0; j < members.size(); ++j) {
+            std::cout << members[j]->getNickname() << " ";
+        }
+        std::cout << std::endl;
+			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++) {
+				std::cout << "test3" << std::endl;
+				addToClientBuf(serv, (*itMember)->getSocket(), message + "\r\n");
 			}
 		}
 	}
