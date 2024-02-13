@@ -50,6 +50,7 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 	std::string targets = msg.getParams()[0];
 	std::vector<std::string> stringChannels;
 	std::vector<std::string> stringClients;
+	std::string	message;
 	std::map<const int, Client> &clients = serv->getClients();
 	std::map<const std::string, Channel> channels = serv->getChannels();
 
@@ -57,6 +58,7 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
 		return ;
 	}
+	message = msg.getParams()[1];
 
 	std::istringstream iss(targets);
 	std::string target;
@@ -67,12 +69,11 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 			stringClients.push_back(target);
 	}
 
-	std::cout << "Size : " << clients.size() << std::endl;
 	for (std::vector<std::string>::iterator it1 = stringClients.begin(); it1 != stringClients.end(); it1++) {
 		std::string targetClientName = *it1;
 		for (std::map<const int, Client>::iterator it2 = clients.begin(); it2 != clients.end(); it2++) {
 			if (targetClientName == it2->second.getNickname()) {
-				addToClientBuf(serv, it2->second.getSocket(), msg.getParams()[1] + "\r\n");
+				addToClientBuf(serv, it2->second.getSocket(), message + "\r\n");
 			}
 		}
 	}
