@@ -31,4 +31,6 @@
 # define MIN_PORT	1025
 # define MAX_PORT	65535
 
+typedef void (*cmdFunction)(Server *, Message, int);
+
 #endif

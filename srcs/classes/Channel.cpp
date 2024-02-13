@@ -33,6 +33,7 @@ Channel &Channel::operator=(const Channel &other) {
 	{
 		_members = other._members;
 		_chanOps = other._chanOps;
+		_name = other._name;
 	}
 	return (*this);
 }

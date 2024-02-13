@@ -5,13 +5,13 @@
 
 class Channel {
 private:
-	std::string	const				_name;
+	std::string						_name;
 	std::string						_topic;
 	std::vector<Client *>			_members;
 	std::map<const int, Client &>	_chanOps;
 
 public:
-	Channel(std::string &name, Server *serv, const int clientFd);
+	Channel(std::string &name, Server *serv, int clientFd);
 	Channel(const Channel &other);
 	~Channel();
 	Channel &operator=(const Channel &other);
@@ -23,7 +23,7 @@ public:
 
 	void	setTopic(std::string &newTopic);
 	void	addMember(Client *newMember);
-	void	addChanOps(const int clientFd, Client &newChanOps);
+	void	addChanOps(int clientFd, Client &newChanOps);
 };
 
 //std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name);
