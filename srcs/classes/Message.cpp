@@ -49,7 +49,7 @@ void Message::splitParams(std::string *params) {
 	{
 		posColon = params->find(':');
 		if (posColon != std::string::npos && posSpace > posColon) {
-			substr = params->substr(posColon);
+			substr = params->substr(posColon + 1);
 			_params.push_back(substr);
 			return ;
 		}
