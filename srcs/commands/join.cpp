@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 #include "main.hpp"
 
+void	printChannelInf(Server *serv, int clientFd, Channel &channel);
+void	existingChan(Channel &channel, Server *serv, int clientFd);
+bool	checkChanName(std::string chanName);
+
 void join(Server *serv, Message msg, int clientFd)
 {
 	std::map<const std::string, Channel> &channelsList = serv->getChannels();
@@ -23,6 +27,12 @@ void join(Server *serv, Message msg, int clientFd)
 		return;
 	}
 
+	if (!checkChanName(msg.getParams()[0]))
+	{
+		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(msg.getParams()[0]));
+		return ;
+	}
+
 	if (it == channelsList.end())
 	{
 		Channel newChannel(msg.getParams()[0], serv, clientFd);
@@ -31,9 +41,45 @@ void join(Server *serv, Message msg, int clientFd)
 		it = channelsList.find(msg.getParams()[0]);
 	}
 	else
-		it->second.addMember(client);
+		existingChan(it->second, serv, clientFd);
 
-	Channel &channel = it->second;
+	printChannelInf(serv, clientFd, it->second);
+}
+
+bool	checkChanName(std::string chanName)
+{
+	if (chanName[0] != '#')
+		return (false);
+
+	if (chanName.find(' ') != std::string::npos)
+		return (false);
+
+	return (true);
+
+}
+
+void	existingChan(Channel &channel, Server *serv, int clientFd)
+{
+	Client	*client = &findClient(serv, clientFd);
+
+	std::map<const int, Client &>::iterator itChanOps = channel.getChanOps().find(clientFd);
+
+	for (size_t i = 0; i < channel.getMembers().size(); i++)
+	{
+		if (channel.getMembers()[i]->getNickname() == client->getNickname())
+			return ;
+	}
+
+	if (itChanOps != channel.getChanOps().end())
+		return ;
+
+	channel.addMember(client);
+}
+
+void	printChannelInf(Server *serv, int clientFd, Channel &channel)
+{
+	Client *client = &findClient(serv, clientFd);
+
 	addToClientBuf(serv, clientFd, JOINCHANNEL(client->getNickname(), channel.getName()));
 	if (channel.getTopic().empty())
 		addToClientBuf(serv, clientFd, RPL_NOTOPIC(client->getNickname(), channel.getName()));
