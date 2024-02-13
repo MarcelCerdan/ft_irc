@@ -24,11 +24,18 @@ If the tharget is a user who is away, send an RPL_AWAY response.
 -handle errors
 -if target start with dollar character broadcast message to all clients on one or multiple servers.
 
+
+for sending client just addtoclientbuf with clientfd of target, if list split and for loop
+for channels, for loop members.getSocket
 */
 
 void privmsg(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
 
 	std::cout << "client privmsg: " << client.getNickname() << std::endl;
-	std::cout << "msg full msg privmsh: " << msg.getFullMsg() << std::endl;
+	std::cout << "msg prefix: " << msg.getPrefix() << std::endl;
+	std::cout << "msg Cmd: " << msg.getCmd() << std::endl;
+	for (size_t i = 0; i < msg.getParams().size(); i++)
+		std::cout << "msg Params: " << msg.getParams()[i] << std::endl;
+	addToClientBuf(serv, clientFd, msg.getParams()[1]);
 }
