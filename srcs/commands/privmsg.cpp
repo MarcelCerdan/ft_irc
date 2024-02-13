@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <sstream>
 
 /*
 privmsg send privates messages between users and channels.
@@ -27,15 +28,52 @@ If the tharget is a user who is away, send an RPL_AWAY response.
 
 for sending client just addtoclientbuf with clientfd of target, if list split and for loop
 for channels, for loop members.getSocket
+
+how to find clientfd of the target:
+-I have to parse the first param to see if it's a list, a client or a channel.
+I make two vectors, one client and one channel and stock during the parsing.
+
+if # at the beginning, it's a channel
+
+
+
+  :Angel PRIVMSG Wiz :Hello are you receiving this message ?
+                                  ; Message from Angel to Wiz.
+
+  :dan!~h@localhost PRIVMSG #coolpeople :Hi everyone!
+                                  ; Message from dan to the channel
+                                  #coolpeople
 */
 
 void privmsg(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
+	std::string targets = msg.getParams()[0];
+	std::vector<std::string> stringChannels;
+	std::vector<std::string> stringClients;
+	std::map<const int, Client> &clients = serv->getClients();
+	std::map<const std::string, Channel> channels = serv->getChannels();
 
-	std::cout << "client privmsg: " << client.getNickname() << std::endl;
-	std::cout << "msg prefix: " << msg.getPrefix() << std::endl;
-	std::cout << "msg Cmd: " << msg.getCmd() << std::endl;
-	for (size_t i = 0; i < msg.getParams().size(); i++)
-		std::cout << "msg Params: " << msg.getParams()[i] << std::endl;
-	addToClientBuf(serv, clientFd, msg.getParams()[1]);
+	if (msg.getParams().size() < 2) {
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
+		return ;
+	}
+
+	std::istringstream iss(targets);
+	std::string target;
+	while (std::getline(iss, target, ',')) {
+		if (!target.empty() && target[0] == '#')
+			stringChannels.push_back(target);
+		else
+			stringClients.push_back(target);
+	}
+
+	std::cout << "Size : " << clients.size() << std::endl;
+	for (std::vector<std::string>::iterator it1 = stringClients.begin(); it1 != stringClients.end(); it1++) {
+		std::string targetClientName = *it1;
+		for (std::map<const int, Client>::iterator it2 = clients.begin(); it2 != clients.end(); it2++) {
+			if (targetClientName == it2->second.getNickname()) {
+				addToClientBuf(serv, it2->second.getSocket(), msg.getParams()[1] + "\r\n");
+			}
+		}
+	}
 }

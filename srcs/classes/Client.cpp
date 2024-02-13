@@ -2,7 +2,7 @@
 
 Client::Client(const int socket) : _socket(socket), _goodPass(false) {}
 
-Client::Client(const Client &other) : _socket(-1){
+Client::Client(const Client &other) : _socket(other._socket){
 	*this = other;
 }
 

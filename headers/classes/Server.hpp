@@ -42,7 +42,6 @@ public:
 };
 
 Client &findClient(Server *server, int fd);
-Client &getClient(Server *server, int fd);
 void	addToClientBuf(Server *serv, int clientFd, std::string str);
 void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
 
