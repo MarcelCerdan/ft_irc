@@ -21,5 +21,6 @@ void	nick(Server *serv, Message msg, int clientFd);
 void	user(Server *serv, Message msg, int clientFd);
 void	join(Server *serv, Message msg, int clientFd);
 void	privmsg(Server *serv, Message msg, int clientFd);
+void	mode(Server *serv, Message msg, int clientFd);
 
 #endif
