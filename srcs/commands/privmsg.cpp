@@ -1,55 +1,12 @@
 #include "main.hpp"
 #include <sstream>
 
-/*
-privmsg send privates messages between users and channels.
-target is the nickname of a client or the name of a channel.
-if the user is in a channel and is banned, the message is not delivered.
-if can't be delivered, the server respond with ERR_CANNOTSENDTOCHAN (404) numeric
-to let the user know.
-If target = channel name -> prefix with one or more channel membership prefix character(@, +, etc).
-The message will be delivered only to the members of the channel with the given or higher status in the channel.
-
-
-check NOTICE command after
-
-
-
-so:
--parse privmsg commands -> extract the target and the message.
-The target can be a channel name or a user nickname.
--if the target is a user, send the message to that user.
--if the target is a channel, check for channel modes and user permissions.
-Handle bans, exceptions, and other channel-specific conditions.
-If the tharget is a user who is away, send an RPL_AWAY response.
--handle errors
--if target start with dollar character broadcast message to all clients on one or multiple servers.
-
-
-for sending client just addtoclientbuf with clientfd of target, if list split and for loop
-for channels, for loop members.getSocket
-
-how to find clientfd of the target:
--I have to parse the first param to see if it's a list, a client or a channel.
-I make two vectors, one client and one channel and stock during the parsing.
-
-if # at the beginning, it's a channel
-
-
-
-  :Angel PRIVMSG Wiz :Hello are you receiving this message ?
-                                  ; Message from Angel to Wiz.
-
-  :dan!~h@localhost PRIVMSG #coolpeople :Hi everyone!
-                                  ; Message from dan to the channel
-                                  #coolpeople
-*/
-
 void privmsg(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
 	std::string targets = msg.getParams()[0];
 	std::vector<std::string> stringChannels;
 	std::vector<std::string> stringClients;
+	std::string preMessage;
 	std::string	message;
 	std::map<const int, Client> &clients = serv->getClients();
 	std::map<const std::string, Channel> &channels = serv->getChannels();
@@ -58,7 +15,8 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
 		return ;
 	}
-	message = msg.getParams()[1];
+	preMessage = ":" + client.getNickname() + " PRIVMSG ";
+	message = ": " + msg.getParams()[1] + "\r\n";
 
 	std::istringstream iss(targets);
 	std::string target;
@@ -71,28 +29,30 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 
 	for (std::vector<std::string>::iterator it1 = stringClients.begin(); it1 != stringClients.end(); it1++) {
 		std::string targetClientName = *it1;
+		bool correct = false;
 		for (std::map<const int, Client>::iterator itClient = clients.begin(); itClient != clients.end(); itClient++) {
 			if (targetClientName == itClient->second.getNickname()) {
-				addToClientBuf(serv, itClient->second.getSocket(), message + "\r\n");
+				addToClientBuf(serv, itClient->second.getSocket(), preMessage + itClient->second.getNickname() + message);
+				correct = true;
 			}
 		}
+		if (!correct)
+			addToClientBuf(serv, clientFd, ERR_NOSUCHNICK(targetClientName));
 	}
 
 	for (std::vector<std::string>::iterator it1 = stringChannels.begin(); it1 != stringChannels.end(); it1++) {
 		std::string targetChannelName = *it1;
 		std::map<std::string, Channel>::iterator itChannel = channels.find(targetChannelName);			
-		std::cout << "test1 - targetChannelName: " << targetChannelName << std::endl;
 		if (itChannel != channels.end()) {
 			std::vector<Client *> &members = itChannel->second.getMembers();
-			std::cout << "Members of channel " << targetChannelName << ": ";
-        for (size_t j = 0; j < members.size(); ++j) {
-            std::cout << members[j]->getNickname() << " ";
-        }
-        std::cout << std::endl;
-			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++) {
-				std::cout << "test3" << std::endl;
-				addToClientBuf(serv, (*itMember)->getSocket(), message + "\r\n");
-			}
+			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++)
+				addToClientBuf(serv, (*itMember)->getSocket(), preMessage + targetChannelName + message);
+
+			std::map<const int, Client &> &chanOps = itChannel->second.getChanOps();
+			for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++)
+				addToClientBuf(serv, itChanOps->second.getSocket(), preMessage + targetChannelName + message);
 		}
+		else
+			addToClientBuf(serv, clientFd, ERR_CANNOTSENDTOCHAN(client.getNickname(), targetChannelName));
 	}
 }

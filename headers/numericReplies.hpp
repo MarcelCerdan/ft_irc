@@ -35,11 +35,9 @@
 # define RPL_ENDOFNAMES(nick, channel) (":localhost 366 " + nick + " " + channel + " :End of /NAMES list\r\n")
 
 // PRIVMSG //
-# define ERR_CANNOTSENDTOCHAIN(nick, channel) (":localhost 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
+# define ERR_CANNOTSENDTOCHAN(nick, channel) (":localhost 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
 # define ERR_NOSUCHNICK(nick) ("localhost 401 " + nick + ": No such nick/channel\r\n")
 # define ERR_NOSUCHSERVER(nick) ("localhost 402 " + nick + " " + "server name" + " :No such server\r\n")
 # define ERR_TOOMANYTARGETS(target) ("localhost 407 " + target + ":Duplicate recipients. No message delivered")
-# define ERR_NORECIPIENT(nick) ("localhost 411 " + nick + " :No recipient given (" + "'command'" + ")\r\n")
-# define ERR_NOTEXTTOSEND(nick) ("localhost 412 " + nick + " :No text to send")
 
 #endif
