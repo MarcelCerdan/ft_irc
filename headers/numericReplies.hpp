@@ -37,4 +37,10 @@
 # define RPL_NAMREPLY(nick, symbol, channel) (":localhost 353 " + nick + " " + symbol + channel + " :")
 # define RPL_ENDOFNAMES(nick, channel) (":localhost 366 " + nick + " " + channel + " :End of /NAMES list\r\n")
 
+// PRIVMSG //
+# define ERR_CANNOTSENDTOCHAN(nick, channel) (":localhost 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
+# define ERR_NOSUCHNICK(nick) ("localhost 401 " + nick + ": No such nick/channel\r\n")
+# define ERR_NOSUCHSERVER(nick) ("localhost 402 " + nick + " " + "server name" + " :No such server\r\n")
+# define ERR_TOOMANYTARGETS(target) ("localhost 407 " + target + ":Duplicate recipients. No message delivered")
+
 #endif

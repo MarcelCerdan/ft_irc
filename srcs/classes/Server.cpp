@@ -7,6 +7,7 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("NICK", &nick));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("USER", &user));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("JOIN", &join));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("PRIVMSG", &privmsg));
 }
 
 Server::Server(const Server &other) {
@@ -184,8 +185,8 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 	/*if (!client)
 			std::cerr << RED << "[Server] Can't find the client" << RESET << std::endl;*/
 	//else
-	{
+//	{
 		sendMsg(it->fd, client.getSendBuff());
 		client.getSendBuff().clear();
-	}
+//	}
 }
