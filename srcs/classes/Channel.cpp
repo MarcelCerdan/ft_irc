@@ -11,13 +11,17 @@
 /* ************************************************************************** */
 #include "classes/Channel.hpp"
 
-Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name) {
+Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name),
+																		_maxUsers(-1) {
 
 	Client &client = findClient(serv, clientFd);
 
+	_password.clear();
 	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
+	for (int i = 0; i <= 3; i++)
+		_modes[i] = false;
 }
 
 Channel::Channel(const Channel &other) {
@@ -34,19 +38,32 @@ Channel &Channel::operator=(const Channel &other) {
 		_members = other._members;
 		_chanOps = other._chanOps;
 		_name = other._name;
+		_password = other._password;
+		_maxUsers = other._maxUsers;
+		for (int i = 0; i <= 4; i++)
+			_modes[i] = other._modes[i];
 	}
 	return (*this);
 }
 
 std::string &Channel::getTopic() { return (_topic); }
 
-std::string Channel::getName() { return (_name); }
+std::string Channel::getName() const { return (_name); }
 
 std::vector<Client *> &Channel::getMembers() { return (_members); }
 
 std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
 
+const bool* Channel::getModes() const { return (_modes); };
+
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
+
+void Channel::setMode(int i, int sign) {
+	if (sign == 0)
+		_modes[i] = false;
+	else if (sign == 1)
+		_modes[i] = true;
+}
 
 void Channel::addMember(Client *newMember) {
 
