@@ -23,14 +23,47 @@ k: FOR CHANNEL | Set/Remove the channel key(password). If Set, it require a pass
 	the good one.
 o: FOR USER | Give/Take channel operator privilege to someone.
 	When set, move a user from the member map to the operator map. If unset, do the opposite.
+	format: MODE channelName params User/ChanOp
 l: FOR CHANNEL | Set/Remove the user limit to channel.
 	Ask mthibaul for his limit of 10 and remove it if unset here.
 */
 
+static std::string getSetModes(std::string modes) {
+	static_cast<void>(modes);
+	return "";
+}
+
+static std::string getRemoveModes(std::string modes) {
+	static_cast<void>(modes);
+	return "";
+}
+
 void	mode(Server *serv, Message msg, int clientFd) {
-	static_cast<void>(serv);
-	static_cast<void>(clientFd);
-	std::cout << "prefix: " << msg.getPrefix() << std::endl;
-	for (size_t i = 0; i < msg.getParams().size(); i++)
-		std::cout << "params: " << msg.getParams()[i] << std::endl;
+	Client &client = findClient(serv, clientFd);
+
+	if (msg.getParams().size() != 2 || msg.getParams().size() != 3) {
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
+		return ;
+	}
+
+	std::string target = msg.getParams()[0];
+	std::string modes = msg.getParams()[1];
+	std::map<const std::string, Channel> &channels = serv->getChannels();
+	std::map<const std::string, Channel>::iterator itChannel = channels.find(target);
+	
+	if (itChannel != channels.end()) {
+		Channel &channel = itChannel->second;
+		static_cast<void>(channel);
+	}
+	else {
+		addToClientBuf(serv, clientFd, ERR_NOSUCHCHANNEL(client.getNickname(), msg.getParams()[0]));
+	}
+	std::string setModes = getSetModes(modes);
+	if (setModes.empty()) {
+		return ;
+	}
+	std::string removeModes = getRemoveModes(modes);
+	if (removeModes.empty()) {
+		return ;
+	}
 }

@@ -43,4 +43,7 @@
 # define ERR_NOSUCHSERVER(nick) ("localhost 402 " + nick + " " + "server name" + " :No such server\r\n")
 # define ERR_TOOMANYTARGETS(target) ("localhost 407 " + target + ":Duplicate recipients. No message delivered")
 
+// MODE //
+# define ERR_NOSUCHCHANNEL(nick, channel) ("localhost 403 " + nick + " " + channel + ": No such channel\r\n")
+
 #endif

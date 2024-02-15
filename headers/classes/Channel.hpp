@@ -14,9 +14,11 @@ class Channel {
 private:
 	std::string						_name;
 	std::string						_topic;
+	std::string						_password;
 	std::vector<Client *>			_members;
 	std::map<const int, Client &>	_chanOps;
 	bool							_modes[3];
+	int								_maxUsers;
 
 public:
 	Channel(std::string &name, Server *serv, int clientFd);

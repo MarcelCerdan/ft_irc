@@ -3,6 +3,12 @@
 
 void privmsg(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
+
+	if (msg.getParams().size() < 2) {
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
+		return ;
+	}
+
 	std::string targets = msg.getParams()[0];
 	std::vector<std::string> stringChannels;
 	std::vector<std::string> stringClients;
@@ -11,10 +17,6 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 	std::map<const int, Client> &clients = serv->getClients();
 	std::map<const std::string, Channel> &channels = serv->getChannels();
 
-	if (msg.getParams().size() < 2) {
-		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
-		return ;
-	}
 	preMessage = ":" + client.getNickname() + " PRIVMSG ";
 	message = ": " + msg.getParams()[1] + "\r\n";
 
