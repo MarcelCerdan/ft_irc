@@ -3,24 +3,16 @@
 void	printChannelInf(Server *serv, int clientFd, Channel &channel);
 void	existingChan(Channel &channel, Server *serv, int clientFd);
 bool	checkChanName(std::string chanName);
+bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
 
 void join(Server *serv, Message msg, int clientFd)
 {
+	if (!checkJoinParams(msg, serv, clientFd))
+		return ;
+
 	std::map<const std::string, Channel> &channelsList = serv->getChannels();
 	std::map<const std::string, Channel>::iterator it = channelsList.find(msg.getParams()[0]);
 
-	Client *client = &findClient(serv, clientFd);
-	if (msg.getParams().empty())
-	{
-		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client->getNickname(), msg.getCmd()));
-		return;
-	}
-
-	if (!checkChanName(msg.getParams()[0]))
-	{
-		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(msg.getParams()[0]));
-		return ;
-	}
 
 	if (it == channelsList.end())
 	{
@@ -33,6 +25,25 @@ void join(Server *serv, Message msg, int clientFd)
 		existingChan(it->second, serv, clientFd);
 
 	printChannelInf(serv, clientFd, it->second);
+}
+
+bool	checkJoinParams(Message &msg, Server *serv, int clientFd)
+{
+	Client &client = findClient(serv, clientFd);
+
+	if (msg.getParams().empty())
+	{
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
+		return (false);
+	}
+
+	if (!checkChanName(msg.getParams()[0]))
+	{
+		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(msg.getParams()[0]));
+		return (false);
+	}
+
+	return (true);
 }
 
 bool	checkChanName(std::string chanName)

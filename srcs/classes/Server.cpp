@@ -28,6 +28,8 @@ std::string const &Server::getPass() { return (_password); }
 
 std::map<const std::string, Channel> &Server::getChannels() { return (_channels); }
 
+char	*Server::getCreationDate() { return (_creationDate); }
+
 void Server::addChannel(Channel channel) {
 
 	_channels.insert(std::pair<const std::string, Channel>(channel.getName(), channel));
@@ -72,7 +74,12 @@ void Server::start() {
 		exit (1);
 	}
 
+	std::time_t currentTime = std::time(NULL);
+	std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
+
+
 	std::cout << GREEN << "Server #" << _socket << " listening on port " << _port << RESET << std::endl;
+	std::cout << GREEN << "Time : " << _creationDate << RESET << std::endl;
 
 	launchServLoop();
 }
@@ -103,8 +110,12 @@ void Server::launchServLoop() {
 				if (it->fd == _socket) // if the socket is the server one, we add a new client
 					newClient(pfds, newPfds);
 				else { // else if the socket is that of an existing client
-					manageExistingConnection(pfds, it);
-					// handle already existing connection
+					{
+						Client &client = findClient(this, it->fd);
+						std::cout << "Register : " << client.getIsRegistered() << std::endl;
+						manageExistingConnection(pfds, it);
+
+					}// handle already existing connection
 				}
 			}
 			else if (it->revents & POLLOUT) { // if I can send data to the socket
@@ -133,7 +144,9 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 		newPfds.push_back(clientPfd);
 		_clients.insert(std::pair<const int, Client>(clientSocket, newClient));
 
+		std::cout << "Register : " << newClient.getIsRegistered() << std::endl;
 		std::cout << BLUE << "Server added client #" << clientSocket << RESET << std::endl;
+
 	}
 	else {
 		std::cout << RED << ERR_FULL_SERV << RESET << std::endl;
@@ -159,6 +172,7 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else if (readCount == 0) {
 		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
 		delClient(&pfds, it);
+		_clients.erase(it->fd);
 		return;
 	}
 	else {

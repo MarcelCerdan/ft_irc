@@ -15,7 +15,7 @@ private:
 	bool		_isRegistered;
 
 public:
-	Client(const int socket);
+	Client(int socket);
 	Client(const Client &other);
 	~Client();
 
@@ -34,8 +34,8 @@ public:
 	std::string	&getNickname();
 	std::string	&getUsername();
 	std::string &getRealName();
-	bool		getGoodPass();
-	bool		getIsRegistered();
+	bool		&getGoodPass();
+	bool		&getIsRegistered();
 	int 		getSocket();
 
 };

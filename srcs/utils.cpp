@@ -41,3 +41,14 @@ void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it)
 	close(it->fd);
 	pfds->erase(it);
 }
+
+void	printServInfo(Server *serv, int clientFd)
+{
+	Client &client = findClient(serv, clientFd);
+	std::string date = serv->getCreationDate();
+
+	addToClientBuf(serv, clientFd, RPL_WELCOME(client.getNickname()));
+	addToClientBuf(serv, clientFd, RPL_YOURHOST(client.getNickname()));
+	addToClientBuf(serv, clientFd, RPL_CREATED(client.getNickname(), date));
+	addToClientBuf(serv, clientFd, RPL_MYINFO(client.getNickname()));
+}

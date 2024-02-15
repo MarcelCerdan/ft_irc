@@ -34,6 +34,11 @@ int Server::parseMsg(int clientFd, Message &msg) {
 			}
 		}
 	}
+
+	std::cout << std::endl << "NICK : " << _clients.find(clientFd)->second.getNickname() << std::endl;
+	std::cout << "USER : " << _clients.find(clientFd)->second.getUsername() << std::endl;
+	std::cout << "REAL : " << _clients.find(clientFd)->second.getRealName() << std::endl;
+	std::cout << "Is registered : " << _clients.find(clientFd)->second.getIsRegistered() << std::endl;
 	return (0);
 }
 
@@ -46,10 +51,7 @@ void Server::registerClient(Message &msg, int clientFd) {
 		nick(this, msg, clientFd);
 	else if (msg.getCmd() == "USER")
 		user(this, msg, clientFd);
-	std::cout << std::endl << "NICK : " << _clients.find(clientFd)->second.getNickname() << std::endl;
-	std::cout << "USER : " << _clients.find(clientFd)->second.getUsername() << std::endl;
-	std::cout << "REAL : " << _clients.find(clientFd)->second.getRealName() << std::endl;
-	std::cout << "Is registered : " << _clients.find(clientFd)->second.getIsRegistered() << std::endl;
+
 }
 
 int	Message::parseCmd(int cmdNmb) {
