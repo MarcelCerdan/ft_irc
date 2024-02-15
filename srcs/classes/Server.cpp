@@ -171,6 +171,7 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else if (readCount == 0) {
 		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
 		delClient(&pfds, it);
+		_clients.erase(it->fd);
 		return;
 	}
 	else {
