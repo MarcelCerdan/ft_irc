@@ -34,7 +34,10 @@ void nick(Server *serv, Message msg, int clientFd)
 	{
 		client.setNickname(params[0]);
 		if (!client.getUsername().empty())
+		{
 			client.setIsRegister();
+			printServInfo(serv, clientFd);
+		}
 	}
 
 }

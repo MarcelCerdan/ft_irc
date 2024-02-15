@@ -16,6 +16,7 @@
 # include <poll.h>
 # include <unistd.h>
 # include <csignal>
+# include <ctime>
 
 # include "errorMessages.hpp"
 # include "colors.hpp"

@@ -40,11 +40,11 @@
 /*----- REPLIES -----*/
 
 # define RPL_WELCOME(nick) (":localhost 001 " + nick + " :Welcome to our IRC server " + nick + " !\r\n")
-# define RPL_YOURHOST(nick) (": localhost 002 " + nick + " :Your host is localhost\r\n")
-# define RPL_CREATED(nick, date) (":localhost 003 " + nick + " :This server was created : " + date + "\r\n")
-# define RPL_MYINFO(nick) (":localhost 004 " + nick + " server name: localhost \nAvailable user modes: -Regular users\n\t-Operators\n \
-							Available channel modes : -i: Set/remove Invite-only channel\n\t-t: Set/remove the restrictions of the TOPIC command to channel \
-							operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel operator privilege\n\t \
-							-l: Set/remove the user limit to channel\r\n")
+# define RPL_YOURHOST(nick) (":localhost 002 " + nick + " :Your host is localhost\r\n")
+# define RPL_CREATED(nick, time) (":localhost 003 " + nick + " :This server was created " + date + "\r\n")
+# define RPL_MYINFO(nick) (":localhost 004 " + nick + " server name: localhost \nAvailable user modes: \n\t-Regular users\n\t-Operators\n \
+Available channel modes : \n\t-i: Set/remove Invite-only channel\n\t-t: Set/remove the restrictions of the TOPIC command to channel \
+operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel operator privilege\n\t\
+-l: Set/remove the user limit to channel\r\n")
 
 #endif

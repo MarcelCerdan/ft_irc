@@ -1,8 +1,8 @@
 #include "classes/Client.hpp"
 
-Client::Client(const int socket) : _socket(socket), _goodPass(false) {}
+Client::Client(const int socket) : _socket(socket), _goodPass(false), _isRegistered(false) {}
 
-Client::Client(const Client &other) : _socket(-1){
+Client::Client(const Client &other) : _socket(other._socket), _goodPass(other._goodPass), _isRegistered(other._isRegistered) {
 	*this = other;
 }
 
@@ -10,7 +10,16 @@ Client::~Client() {}
 
 Client &Client::operator=(const Client &other) {
 
-	(void) other;
+	if (this != &other)
+	{
+		_readBuff = other._readBuff;
+		_sendBuff = other._sendBuff;
+		_nickname = other._nickname;
+		_username = other._username;
+		_realName = other._realName;
+		_goodPass = other._goodPass;
+		_isRegistered = other._isRegistered;
+	}
 	return (*this);
 }
 
@@ -24,9 +33,9 @@ std::string &Client::getUsername() { return (_username); }
 
 std::string &Client::getRealName() { return (_realName); }
 
-bool Client::getGoodPass() { return (_goodPass); }
+bool &Client::getGoodPass() { return (_goodPass); }
 
-bool Client::getIsRegistered() { return (_isRegistered); }
+bool &Client::getIsRegistered() { return (_isRegistered); }
 
 int Client::getSocket() { return (_socket); }
 

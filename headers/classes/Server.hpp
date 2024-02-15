@@ -10,6 +10,7 @@ class Channel;
 class Server {
 
 private:
+	char 						_creationDate[100];
 	char						*_port;
 	int							_socket;
 	const std::string			_password;
@@ -28,6 +29,7 @@ public:
 	std::map<const int, Client> &getClients();
 	std::string const &getPass();
 	std::map<const std::string, Channel> &getChannels();
+	char	*getCreationDate();
 
 	void	addChannel(Channel channel);
 
@@ -45,5 +47,6 @@ Client &findClient(Server *server, int fd);
 Client &getClient(Server *server, int fd);
 void	addToClientBuf(Server *serv, int clientFd, std::string str);
 void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
+void	printServInfo(Server *serv, int clientFd);
 
 #endif
