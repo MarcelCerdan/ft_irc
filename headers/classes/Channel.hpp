@@ -28,12 +28,16 @@ public:
 
 	std::string	&getTopic();
 	std::string getName() const;
+	std::string getPassword() const;
 	std::vector<Client *>	&getMembers();
 	std::map<const int, Client &> &getChanOps();
 	const bool*	getModes() const;
+	int getMaxUsers() const;
 
 	void	setTopic(std::string &newTopic);
+	void	setPassword(std::string &newPassword);
 	void	setMode(int i, int sign);
+	void	setMaxUsers(int newMaxUsers);
 	void	addMember(Client *newMember);
 	void	addChanOps(int clientFd, Client &newChanOps);
 };

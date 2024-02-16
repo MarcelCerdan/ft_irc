@@ -46,9 +46,11 @@ Channel &Channel::operator=(const Channel &other) {
 	return (*this);
 }
 
+std::string Channel::getName() const { return (_name); }
+
 std::string &Channel::getTopic() { return (_topic); }
 
-std::string Channel::getName() const { return (_name); }
+std::string Channel::getPassword() const { return (_password); }
 
 std::vector<Client *> &Channel::getMembers() { return (_members); }
 
@@ -56,7 +58,11 @@ std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
 
 const bool* Channel::getModes() const { return (_modes); };
 
+int Channel::getMaxUsers() const { return (_maxUsers); };
+
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
+
+void Channel::setPassword(std::string &newPassword) { _password = newPassword; }
 
 void Channel::setMode(int i, int sign) {
 	if (sign == 0)
@@ -64,6 +70,8 @@ void Channel::setMode(int i, int sign) {
 	else if (sign == 1)
 		_modes[i] = true;
 }
+
+void Channel::setMaxUsers(int newMaxUsers) { _maxUsers = newMaxUsers; }
 
 void Channel::addMember(Client *newMember) {
 
