@@ -11,15 +11,14 @@
 /* ************************************************************************** */
 #include "classes/Channel.hpp"
 
-Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name),
-																		_maxUsers(-1) {
+Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name) {
 
 	Client &client = findClient(serv, clientFd);
 
 	_password.clear();
 	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
-
+	_maxUsers = -1;
 	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
 }
@@ -71,7 +70,11 @@ void Channel::setMode(int i, int sign) {
 		_modes[i] = true;
 }
 
-void Channel::setMaxUsers(int newMaxUsers) { _maxUsers = newMaxUsers; }
+void Channel::setMaxUsers(int newMaxUsers) { 
+	std::cout << "before: " << _maxUsers << std::endl;
+	_maxUsers = newMaxUsers;
+	std::cout << "after: " << _maxUsers << std::endl;
+	}
 
 void Channel::addMember(Client *newMember) {
 
