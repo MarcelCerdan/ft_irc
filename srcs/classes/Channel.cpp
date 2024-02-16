@@ -62,7 +62,7 @@ int Channel::getMaxUsers() const { return (_maxUsers); };
 
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
-void Channel::setPassword(std::string &newPassword) { _password = newPassword; }
+void Channel::setPassword(std::string newPassword) { _password = newPassword; }
 
 void Channel::setMode(int i, int sign) {
 	if (sign == 0)

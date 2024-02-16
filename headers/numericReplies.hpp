@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   numericReplies.hpp                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/28 03:12:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/01/28 03:12:00 by mthibaul         ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
 #ifndef NUMERICREPLIES_HPP
 # define NUMERICREPLIES_HPP
 
@@ -55,5 +44,8 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 
 // MODE //
 # define ERR_NOSUCHCHANNEL(nick, channel) ("localhost 403 " + nick + " " + channel + ": No such channel\r\n")
-
+# define ERR_MODEUNKNOWFLAG(channel, flag) ("localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
+# define ERR_WRONGMODEFORMAT(nick, modestring) ("localhost ??? " + nick + " :Wrong format for mode \'" + modestring + "\'")
+# define RPL_CHANNELMODEIS(nick, channel) ("localhost 324 " + nick + " " + channel + "\r\n")
+# define RPL_CREATIONTIME(nick, channel) ("locahost 329 " + nick + " " + channel + "\r\n")
 #endif

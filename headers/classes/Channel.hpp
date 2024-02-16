@@ -4,10 +4,10 @@
 # include "main.hpp"
 
 enum e_modes {
-	i = 0,
-	t = 1,
-	k = 2,
-	l = 3
+	e_i = 0,
+	e_t = 1,
+	e_k = 2,
+	e_l = 3
 };
 
 class Channel {
@@ -35,7 +35,7 @@ public:
 	int getMaxUsers() const;
 
 	void	setTopic(std::string &newTopic);
-	void	setPassword(std::string &newPassword);
+	void	setPassword(std::string newPassword);
 	void	setMode(int i, int sign);
 	void	setMaxUsers(int newMaxUsers);
 	void	addMember(Client *newMember);
