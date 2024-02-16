@@ -34,4 +34,7 @@
 
 typedef void (*cmdFunction)(Server *, Message, int);
 
+bool	checkClient(Server *serv, Message msg, int clientFd);
+bool	checkChannel(Server *serv, Message msg, int clientFd);
+
 #endif

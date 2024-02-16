@@ -1,7 +1,8 @@
 #include "main.hpp"
 
 void	printChannelInf(Server *serv, int clientFd, Channel &channel);
-void	existingChan(Channel &channel, Server *serv, int clientFd);
+bool	existingChan(Channel &channel, Server *serv, int clientFd);
+bool	inviteMode(Channel &channel, std::string &nick);
 bool	checkChanName(std::string chanName);
 bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
 
@@ -21,9 +22,10 @@ void join(Server *serv, Message msg, int clientFd)
 		channelsList = serv->getChannels();
 		it = channelsList.find(msg.getParams()[0]);
 	}
-	else
-		existingChan(it->second, serv, clientFd);
+	else if (!existingChan(it->second, serv, clientFd))
+		return;
 
+	std::cout << "Max users : " << it->second.getMaxUsers() << std::endl;
 	printChannelInf(serv, clientFd, it->second);
 }
 
@@ -58,7 +60,7 @@ bool	checkChanName(std::string chanName)
 
 }
 
-void	existingChan(Channel &channel, Server *serv, int clientFd)
+bool	existingChan(Channel &channel, Server *serv, int clientFd)
 {
 	Client	*client = &findClient(serv, clientFd);
 
@@ -67,13 +69,36 @@ void	existingChan(Channel &channel, Server *serv, int clientFd)
 	for (size_t i = 0; i < channel.getMembers().size(); i++)
 	{
 		if (channel.getMembers()[i]->getNickname() == client->getNickname())
-			return ;
+			return (true);
 	}
 
 	if (itChanOps != channel.getChanOps().end())
-		return ;
+		return (true);
 
-	channel.addMember(client);
+	if (inviteMode(channel, client->getNickname()))
+		channel.addMember(client);
+	else
+	{
+		addToClientBuf(serv, clientFd, ERR_INVITEONLYCHAN(client->getNickname(), channel.getName()));
+		return (false);
+	}
+
+	return (true);
+}
+
+bool	inviteMode(Channel &channel, std::string &nick)
+{
+	if (!channel.getModes()[e_i])
+		return (true);
+
+	std::vector<std::string> invites = channel.getInvites();
+	for (size_t i = 0; i < invites.size(); i++)
+	{
+		if (invites[i] == nick)
+			return (true);
+	}
+
+	return (false);
 }
 
 void	printChannelInf(Server *serv, int clientFd, Channel &channel)

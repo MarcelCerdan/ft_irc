@@ -4,7 +4,7 @@
 /*----- COMMANDS ERRORS -----*/
 
 # define ERR_NEEDMOREPARAMS(nick, command) (":localhost 461 " + nick + " " + command + " :Not enough parameters\r\n")
-# define ERR_ALREADYREGISTERED(nick) (":localhost 462 " + nick + " :You may not reregiste\r\n")
+# define ERR_ALREADYREGISTERED(nick) (":localhost 462 " + nick + " :You may not reregister\r\n")
 
 // PASS //
 # define ERR_PASSWDMISMATCH(nick) (":localhost 464 " + nick + " :Password incorrect\r\n")
@@ -15,7 +15,8 @@
 # define ERR_NICKNAMEINUSE(nick, new_nick) (":localhost 433 " + nick + " " + new_nick + " :Nickname is already in use\r\n")
 
 // JOIN //
-# define ERR_BADCHANMASK(channel) (channel + " :Bad channel name\r\n")
+# define ERR_BADCHANMASK(channel) (":localhost 476 " + channel + " :Bad channel name\r\n")
+# define ERR_INVITEONLYCHAN(nick, channel) (":localhost 473 " + nick + " " + channel + " :You need an invitation to join this channel\r\n")
 
 /*----- COMMANDS REPLIES -----*/
 
@@ -44,8 +45,10 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 
 // MODE //
 # define ERR_NOSUCHCHANNEL(nick, channel) ("localhost 403 " + nick + " " + channel + ": No such channel\r\n")
-# define ERR_MODEUNKNOWFLAG(channel, flag) ("localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
-# define ERR_WRONGMODEFORMAT(nick, modestring) ("localhost ??? " + nick + " :Wrong format for mode \'" + modestring + "\'")
+# define ERR_MODEUNKNOWFLAG(channel, flag) ("localhost 501 " + channel + " :Unknown MODE flag '" + flag + "'\r\n")
+# define ERR_WRONGMODEFORMAT(nick, modestring) ("localhost ??? " + nick + " :Wrong format for mode \'" + modestring + "\r\n'")
 # define RPL_CHANNELMODEIS(nick, channel) ("localhost 324 " + nick + " " + channel + "\r\n")
 # define RPL_CREATIONTIME(nick, channel) ("locahost 329 " + nick + " " + channel + "\r\n")
+
+
 #endif

@@ -17,6 +17,7 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 	Client &client = findClient(serv, clientFd);
 
 	_password.clear();
+	_invites.clear();
 	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
@@ -52,6 +53,8 @@ std::string &Channel::getTopic() { return (_topic); }
 
 std::string Channel::getPassword() const { return (_password); }
 
+std::vector<std::string> Channel::getInvites() const { return (_invites); }
+
 std::vector<Client *> &Channel::getMembers() { return (_members); }
 
 std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
@@ -72,6 +75,11 @@ void Channel::setMode(int i, int sign) {
 }
 
 void Channel::setMaxUsers(int newMaxUsers) { _maxUsers = newMaxUsers; }
+
+void Channel::addInvite(std::string &nick) {
+
+	_invites.push_back(nick);
+}
 
 void Channel::addMember(Client *newMember) {
 
