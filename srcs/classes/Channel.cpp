@@ -11,20 +11,19 @@
 /* ************************************************************************** */
 #include "classes/Channel.hpp"
 
-Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name) {
+Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name),
+																		_maxUsers(0) {
 
 	Client &client = findClient(serv, clientFd);
 
 	_password.clear();
 	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
-	_maxUsers = -1;
 	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
 }
 
 Channel::Channel(const Channel &other) {
-
 	*this = other;
 }
 
@@ -61,7 +60,11 @@ int Channel::getMaxUsers() const { return (_maxUsers); };
 
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
-void Channel::setPassword(std::string newPassword) { _password = newPassword; }
+void Channel::setPassword(std::string newPassword) {
+	std::cout << "before setting password " << _password << std::endl;
+	_password = newPassword;
+	std::cout << "after setting password " << _password << std::endl;
+	}
 
 void Channel::setMode(int i, int sign) {
 	if (sign == 0)
@@ -70,11 +73,7 @@ void Channel::setMode(int i, int sign) {
 		_modes[i] = true;
 }
 
-void Channel::setMaxUsers(int newMaxUsers) { 
-	std::cout << "before: " << _maxUsers << std::endl;
-	_maxUsers = newMaxUsers;
-	std::cout << "after: " << _maxUsers << std::endl;
-	}
+void Channel::setMaxUsers(int newMaxUsers) { _maxUsers = newMaxUsers; }
 
 void Channel::addMember(Client *newMember) {
 
