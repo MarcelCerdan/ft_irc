@@ -95,3 +95,19 @@ bool	checkChannel(Server *serv, Message msg, int clientFd) {
 	addToClientBuf(serv, clientFd, ERR_NOSUCHCHANNEL(findClient(serv, clientFd).getNickname(), msg.getParams()[1]));
 	return (false);
 }
+
+void printChannelInfo(Channel &channel) {
+    std::cout << "Channel Members: ";
+    const std::vector<Client *> &members = channel.getMembers();
+    for (size_t i = 0; i < members.size(); ++i) {
+        std::cout << members[i]->getNickname() << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Channel ChanOps: ";
+    const std::map<const int, Client &> &chanOps = channel.getChanOps();
+    for (std::map<const int, Client &>::const_iterator it = chanOps.begin(); it != chanOps.end(); ++it) {
+        std::cout << it->second.getNickname() << " ";
+    }
+    std::cout << std::endl;
+}

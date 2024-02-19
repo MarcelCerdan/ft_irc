@@ -29,7 +29,6 @@ Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
 	for (int i = 0; i < 3; i++)
 		_modes[i] = other._modes[i];
-	*this = other;
 }
 
 Channel::~Channel() {}
@@ -67,7 +66,11 @@ int Channel::getMaxUsers() const { return (_maxUsers); };
 
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
-void Channel::setPassword(std::string newPassword) { _password = newPassword; }
+void Channel::setPassword(std::string newPassword) {
+	std::cout << "before setting password " << _password << std::endl;
+	_password = newPassword;
+	std::cout << "after setting password " << _password << std::endl;
+	}
 
 void Channel::setMode(int i, int sign) {
 	if (sign == 0)

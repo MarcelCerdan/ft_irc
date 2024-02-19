@@ -48,16 +48,16 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 
 // PRIVMSG //
 # define ERR_CANNOTSENDTOCHAN(nick, channel) (":localhost 404 " + nick + " " + channel + " :Cannot send to channel\r\n")
-# define ERR_NOSUCHNICK(nick) ("localhost 401 " + nick + ": No such nick/channel\r\n")
-# define ERR_NOSUCHSERVER(nick) ("localhost 402 " + nick + " " + "server name" + " :No such server\r\n")
-# define ERR_TOOMANYTARGETS(target) ("localhost 407 " + target + ":Duplicate recipients. No message delivered")
+# define ERR_NOSUCHNICK(nick) (":localhost 401 " + nick + ": No such nick/channel\r\n")
+# define ERR_NOSUCHSERVER(nick) (":localhost 402 " + nick + " " + "server name" + " :No such server\r\n")
+# define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + ":Duplicate recipients. No message delivered")
 
 // MODE //
-# define ERR_NOSUCHCHANNEL(nick, channel) ("localhost 403 " + nick + " " + channel + ": No such channel\r\n")
-# define ERR_MODEUNKNOWFLAG(channel, flag) ("localhost 501 " + channel + " :Unknown MODE flag '" + flag + "'\r\n")
-# define ERR_WRONGMODEFORMAT(nick, modestring) ("localhost ??? " + nick + " :Wrong format for mode \'" + modestring + "\r\n'")
-# define RPL_CHANNELMODEIS(nick, channel) ("localhost 324 " + nick + " " + channel + "\r\n")
-# define RPL_CREATIONTIME(nick, channel) ("locahost 329 " + nick + " " + channel + "\r\n")
-
-
+# define RPL_CHANNELMODEIS(nick, channel) (":localhost 324 " + nick + " " + channel + "\r\n")
+# define RPL_CREATIONTIME(nick, channel) (":locahost 329 " + nick + " " + channel + "\r\n")
+# define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + ": No such channel\r\n")
+# define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
+# define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
+# define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
+# define ERR_NOTACHANNELOPERATOR(nick, channel) (":localhost " + nick + " " + channel + " :Not a channel operator\r\n")
 #endif

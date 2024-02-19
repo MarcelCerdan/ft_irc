@@ -27,7 +27,7 @@
 # include "commands.hpp"
 # include "classes/Channel.hpp"
 
-# define MAX_CLIENT 10
+# define MAX_CLIENTS 10
 # define BUFF_SIZE	512
 # define MIN_PORT	1025
 # define MAX_PORT	65535
