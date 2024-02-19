@@ -15,8 +15,27 @@
 
 Client &findClient(Server *server, const int fd)
 {
-	std::map<const int, Client> &clients_list = server->getClients();
-	std::map<const int, Client>::iterator it = clients_list.find(fd);
+	std::map<const int, Client> &clientsList = server->getClients();
+	std::map<const int, Client>::iterator it = clientsList.find(fd);
+
+	return (it->second);
+}
+
+Client	&getClient(Server *serv, const std::string &nick)
+{
+	std::map<const int, Client> &clientsList = serv->getClients();
+
+	for(std::map<const int, Client>::iterator it = clientsList.begin(); it != clientsList.end(); it++) {
+		if (it->second.getNickname() == nick)
+			return (it->second);
+	}
+
+	return (clientsList.end()->second);
+}
+
+Channel &findChannel(Server *serv, const std::string &chanName) {
+	std::map<const std::string, Channel>			channelsList = serv->getChannels();
+	std::map<const std::string, Channel>::iterator	it = channelsList.find(chanName);
 
 	return (it->second);
 }

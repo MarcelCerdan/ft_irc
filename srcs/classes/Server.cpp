@@ -9,6 +9,7 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("JOIN", &join));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("PRIVMSG", &privmsg));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("MODE", &mode));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("INVITE", &invite));
 }
 
 Server::Server(const Server &other) {
