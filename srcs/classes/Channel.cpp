@@ -48,6 +48,7 @@ Channel &Channel::operator=(const Channel &other) {
 		_maxUsers = other._maxUsers;
 		for (int i = 0; i <= 3; i++)
 			_modes[i] = other._modes[i];
+		std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	}
 	return (*this);
 }
