@@ -38,13 +38,12 @@ void invite(Server *serv, Message msg, int clientFd) {
 }
 
 static bool	clientOnChannel(int	clientFd, std::string &chanName, Server *serv) {
-	Client							&client = findClient(serv, clientFd);
-	Channel 						&channel = findChannel(serv, chanName);
+	Client	&client = findClient(serv, clientFd);
+	Channel	&channel = findChannel(serv, chanName);
 
 	if (isOperator(client, channel))
 		return (true);
 
-	std::cout << "OK" << std::endl;
 	if (channel.getMembers().empty())
 		return (false);
 

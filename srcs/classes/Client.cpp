@@ -33,6 +33,8 @@ std::string &Client::getUsername() { return (_username); }
 
 std::string &Client::getRealName() { return (_realName); }
 
+std::vector<std::string> &Client::getChannels() { return (_channels); }
+
 bool &Client::getGoodPass() { return (_goodPass); }
 
 bool &Client::getIsRegistered() { return (_isRegistered); }
@@ -58,3 +60,7 @@ void Client::setRealName(const std::string &realName) { _realName = realName; }
 void Client::setUsername(const std::string &username) { _username = username; }
 
 void Client::setIsRegister() { _isRegistered = true; }
+
+void Client::addChannel(const std::string &channel) {
+	_channels.push_back(channel);
+}

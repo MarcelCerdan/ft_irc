@@ -13,6 +13,7 @@ private:
 	std::string _realName;
 	bool		_goodPass;
 	bool		_isRegistered;
+	std::vector<std::string> _channels;
 
 public:
 	Client(int socket);
@@ -34,9 +35,12 @@ public:
 	std::string	&getNickname();
 	std::string	&getUsername();
 	std::string &getRealName();
+	std::vector<std::string> &getChannels();
 	bool		&getGoodPass();
 	bool		&getIsRegistered();
 	int 		getSocket();
+
+	void		addChannel(std::string const &channel);
 
 };
 

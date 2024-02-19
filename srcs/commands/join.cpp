@@ -25,7 +25,7 @@ void join(Server *serv, Message msg, int clientFd)
 	else if (!existingChan(it->second, serv, clientFd))
 		return;
 
-	std::cout << "Max users : " << it->second.getMaxUsers() << std::endl;
+	findClient(serv, clientFd).addChannel(it->second.getName());
 	printChannelInf(serv, clientFd, it->second);
 }
 

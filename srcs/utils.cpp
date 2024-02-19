@@ -49,17 +49,12 @@ void	addToClientBuf(Server *serv, int const clientFd, std::string str)
 
 int	sendMsg(int const clientFd, std::string &buf)
 {
+	std::cout << clientFd << std::endl;
 	int ret = send(clientFd, buf.c_str(), buf.size(), MSG_NOSIGNAL);
 
 	if (ret < 0)
 		perror("[Server] sendMsg");
 	return (ret);
-}
-
-void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it)
-{
-	close(it->fd);
-	pfds->erase(it);
 }
 
 void	printServInfo(Server *serv, int clientFd)
@@ -98,14 +93,12 @@ bool	checkChannel(Server *serv, Message msg, int clientFd) {
 }
 
 void printChannelInfo(Channel &channel) {
-    std::cout << "Channel Members: ";
     const std::vector<Client *> &members = channel.getMembers();
     for (size_t i = 0; i < members.size(); ++i) {
         std::cout << members[i]->getNickname() << " ";
     }
     std::cout << std::endl;
 
-    std::cout << "Channel ChanOps: ";
     const std::map<const int, Client &> &chanOps = channel.getChanOps();
     for (std::map<const int, Client &>::const_iterator it = chanOps.begin(); it != chanOps.end(); ++it) {
         std::cout << it->second.getNickname() << " ";
@@ -116,17 +109,16 @@ void printChannelInfo(Channel &channel) {
 
 bool isOperator(Client &client, Channel &channel) {
 	std::string clientName = client.getNickname();
-
 	std::map<const int, Client &> &chanOps = channel.getChanOps();
 	for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
 		if (itChanOps->second.getNickname() == clientName)
 			return (true);
 	}
 	return (false);
+}
 
 std::string intToString(int number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
-
 }

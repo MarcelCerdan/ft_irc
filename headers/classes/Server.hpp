@@ -39,6 +39,7 @@ public:
 	void	manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
 	void	registerClient(Message	&msg, int	clientFd);
 	void	managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
+	void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
 	int		parseMsg(int clientFd, class Message &msg);
 
 };
@@ -47,7 +48,6 @@ Client	&findClient(Server *server, int fd);
 Client	&getClient(Server *serv, const std::string &nick);
 Channel &findChannel(Server *serv, const std::string &chanName);
 void	addToClientBuf(Server *serv, int clientFd, std::string str);
-void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
 void	printServInfo(Server *serv, int clientFd);
 
 #endif

@@ -174,14 +174,13 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else if (readCount == 0) {
 		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
 		delClient(&pfds, it);
-		_clients.erase(it->fd);
 		return;
 	}
 	else {
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
-		//if (client.getReadBuff().find("\r\n") == std::string::npos)
-		//	client.setReadBuff("\r\n");
+		if (client.getReadBuff().find("\r\n") == std::string::npos)
+			client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
 		if (client.getReadBuff().find("\r\n") != std::string::npos)
@@ -205,4 +204,16 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 		sendMsg(it->fd, client.getSendBuff());
 		client.getSendBuff().clear();
 //	}
+}
+
+void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it) {
+	close(it->fd);
+	pfds->erase(it);
+
+	Client &client = _clients.find(it->fd)->second;
+	std::vector<std::string> channels = client.getChannels();
+
+	/*for (size_t i = 0; i < channels.size(); i++) {
+		findChannel(this, channels[i]).
+	}*/
 }
