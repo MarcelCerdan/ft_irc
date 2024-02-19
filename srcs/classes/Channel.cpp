@@ -29,6 +29,8 @@ Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
 	for (int i = 0; i < 3; i++)
 		_modes[i] = other._modes[i];
+
+	*this = other;
 }
 
 Channel::~Channel() {}

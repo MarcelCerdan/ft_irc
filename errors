@@ -1,0 +1,60 @@
+==47025== Memcheck, a memory error detector
+==47025== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==47025== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==47025== Command: ./ircserv 1234 pass
+==47025== 
+==47025== Syscall param sendto(len) contains uninitialised byte(s)
+==47025==    at 0x4CD0750: send (send.c:28)
+==47025==    by 0x4111DE: sendMsg(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405F35: Server::managePollout(std::vector<pollfd, std::allocator<pollfd> >&, __gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405435: Server::launchServLoop() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405057: Server::start() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x403C1C: main (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025== 
+==47025== Syscall param socketcall.sendto(msg) points to unaddressable byte(s)
+==47025==    at 0x4CD0750: send (send.c:28)
+==47025==    by 0x4111DE: sendMsg(int, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405F35: Server::managePollout(std::vector<pollfd, std::allocator<pollfd> >&, __gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405435: Server::launchServLoop() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405057: Server::start() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x403C1C: main (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==  Address 0x7 is not stack'd, malloc'd or (recently) free'd
+==47025== 
+[Server] sendMsg: Bad address
+==47025== Invalid write of size 1
+==47025==    at 0x49A79CF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::clear() (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==47025==    by 0x405F46: Server::managePollout(std::vector<pollfd, std::allocator<pollfd> >&, __gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405435: Server::launchServLoop() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405057: Server::start() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x403C1C: main (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==  Address 0x7 is not stack'd, malloc'd or (recently) free'd
+==47025== 
+==47025== 
+==47025== Process terminating with default action of signal 11 (SIGSEGV)
+==47025==  Access not within mapped region at address 0x7
+==47025==    at 0x49A79CF: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::clear() (in /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28)
+==47025==    by 0x405F46: Server::managePollout(std::vector<pollfd, std::allocator<pollfd> >&, __gnu_cxx::__normal_iterator<pollfd*, std::vector<pollfd, std::allocator<pollfd> > >&) (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405435: Server::launchServLoop() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x405057: Server::start() (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==    by 0x403C1C: main (in /nfs/homes/mthibaul/Documents/cursus/cercle_5/ft_irc/ircserv)
+==47025==  If you believe this happened as a result of a stack
+==47025==  overflow in your program's main thread (unlikely but
+==47025==  possible), you can try to increase the size of the
+==47025==  main thread stack using the --main-stacksize= flag.
+==47025==  The main thread stack size used in this run was 8388608.
+==47025== 
+==47025== HEAP SUMMARY:
+==47025==     in use at exit: 1,706 bytes in 14 blocks
+==47025==   total heap usage: 180 allocs, 166 frees, 91,611 bytes allocated
+==47025== 
+==47025== LEAK SUMMARY:
+==47025==    definitely lost: 0 bytes in 0 blocks
+==47025==    indirectly lost: 0 bytes in 0 blocks
+==47025==      possibly lost: 0 bytes in 0 blocks
+==47025==    still reachable: 1,706 bytes in 14 blocks
+==47025==         suppressed: 0 bytes in 0 blocks
+==47025== Rerun with --leak-check=full to see details of leaked memory
+==47025== 
+==47025== Use --track-origins=yes to see where uninitialised values come from
+==47025== For lists of detected and suppressed errors, rerun with: -s
+==47025== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)

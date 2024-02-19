@@ -31,7 +31,7 @@ public:
 	std::map<const std::string, Channel> &getChannels();
 	char	*getCreationDate();
 
-	void	addChannel(Channel channel);
+	void	addChannel(Channel &channel);
 
 	void	launchServLoop();
 	void	start();

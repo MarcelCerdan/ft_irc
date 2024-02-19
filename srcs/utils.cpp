@@ -33,7 +33,7 @@ Client	&getClient(Server *serv, const std::string &nick)
 }
 
 Channel &findChannel(Server *serv, const std::string &chanName) {
-	std::map<const std::string, Channel>			channelsList = serv->getChannels();
+	std::map<const std::string, Channel>			&channelsList = serv->getChannels();
 	std::map<const std::string, Channel>::iterator	it = channelsList.find(chanName);
 
 	return (it->second);
@@ -110,4 +110,15 @@ void printChannelInfo(Channel &channel) {
         std::cout << it->second.getNickname() << " ";
     }
     std::cout << std::endl;
+}
+
+bool isOperator(Client &client, Channel &channel) {
+	std::string clientName = client.getNickname();
+
+	std::map<const int, Client &> &chanOps = channel.getChanOps();
+	for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
+		if (itChanOps->second.getNickname() == clientName)
+			return (true);
+	}
+	return (false);
 }

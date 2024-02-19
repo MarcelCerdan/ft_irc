@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 #include "main.hpp"
 
-static bool	clientOnChannel(Client &client, Channel &channel, Server *serv);
-static bool invitedOnChannel(Client &client, Channel &channel, Server *serv, const std::string &invitedClient);
+static bool	clientOnChannel(int clientFd, std::string &chanName, Server *serv);
+static bool invitedOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient);
 
 void invite(Server *serv, Message msg, int clientFd) {
 
@@ -26,10 +26,10 @@ void invite(Server *serv, Message msg, int clientFd) {
 	if (!checkClient(serv, msg, clientFd) || !checkChannel(serv, msg, clientFd))
 		return ;
 
-	Channel &channel = findChannel(serv, msg.getParams()[1]);
-	if (!clientOnChannel(client, channel, serv) || invitedOnChannel(client, channel, serv, msg.getParams()[0]))
+	if (!clientOnChannel(clientFd, msg.getParams()[1], serv) || invitedOnChannel(clientFd, msg.getParams()[1], serv, msg.getParams()[0]))
 		return ;
 
+	Channel &channel = findChannel(serv, msg.getParams()[1]);
 	Client &invitedClient = getClient(serv, msg.getParams()[0]);
 
 	channel.addInvite(msg.getParams()[0]);
@@ -37,15 +37,14 @@ void invite(Server *serv, Message msg, int clientFd) {
 	addToClientBuf(serv, invitedClient.getSocket(), INVITE(client.getNickname(), msg.getParams()[1]));
 }
 
-static bool	clientOnChannel(Client &client, Channel &channel, Server *serv) {
-	std::map<const int, Client &> chanOps = channel.getChanOps();
+static bool	clientOnChannel(int	clientFd, std::string &chanName, Server *serv) {
+	Client							&client = findClient(serv, clientFd);
+	Channel 						&channel = findChannel(serv, chanName);
 
-	for (std::map<const int, Client &>::iterator it = chanOps.begin(); it != chanOps.end(); it++) {
-		std::cout << "Key: " << it->first << std::endl;
-		if (it->second.getNickname() == client.getNickname())
-			return (true);
-	}
+	if (isOperator(client, channel))
+		return (true);
 
+	std::cout << "OK" << std::endl;
 	if (channel.getMembers().empty())
 		return (false);
 
@@ -64,15 +63,17 @@ static bool	clientOnChannel(Client &client, Channel &channel, Server *serv) {
 	return (false);
 }
 
-static bool invitedOnChannel(Client &client, Channel &channel, Server *serv, const std::string &invitedClient) {
-	for (std::map<const int, Client &>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++) {
-		if (it->second.getNickname() == invitedClient) {
-			addToClientBuf(serv, client.getSocket(), ERR_USERONCHANNEL(client.getNickname(), invitedClient, channel.getName()));
-			return (true);
-		}
+static bool invitedOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient) {
+	Client	&client = findClient(serv, clientFd);
+	Client	&clientInvited = getClient(serv, invitedClient);
+	Channel &channel = findChannel(serv, chanName);
+
+	if (isOperator(clientInvited, channel))
+	{
+		addToClientBuf(serv, client.getSocket(), ERR_USERONCHANNEL(client.getNickname(), invitedClient, channel.getName()));
+		return (true);
 	}
 
-	std::cout << "OKI" << std::endl;
 	if (channel.getMembers().empty())
 		return (false);
 

@@ -164,17 +164,6 @@ static void applyRemoveModes(std::string removeModes, Channel &channel, Message 
 	}
 }
 
-static bool isOperator(Client &client, Channel &channel) {
-	std::string clientName = client.getNickname();
-
-	std::map<const int, Client &> &chanOps = channel.getChanOps();
-	for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
-		if (itChanOps->second.getNickname() == clientName)
-			return (true);
-	}
-	return (false);
-}
-
 static void displayAllModes(Server *serv, Client &client, Channel &channel, int clientFd) {
 	static_cast<void>(serv);
 	static_cast<void>(client);
