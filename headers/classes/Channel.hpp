@@ -47,5 +47,6 @@ public:
 };
 
 //std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name);
+void printChannelInfo(Channel &channel);
 
 #endif

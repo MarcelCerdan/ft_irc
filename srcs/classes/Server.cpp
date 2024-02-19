@@ -136,7 +136,7 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 	int clientSocket = accept(_socket, (sockaddr *)&client, &addr_size);
 	if (clientSocket < 0)
 		std::cerr << ERR_ACCEPT << std::endl;
-	if (pfds.size() - 1 < MAX_CLIENT) { // if server isn't full
+	if (pfds.size() - 1 < MAX_CLIENTS) { // if server isn't full
 		pollfd	clientPfd;
 		Client	newClient(clientSocket);
 
