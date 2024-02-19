@@ -61,8 +61,3 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
 # define ERR_NOTACHANNELOPERATOR(nick, channel) (":localhost " + nick + " " + channel + " :Not a channel operator\r\n")
 #endif
-
-// TOPIC //
-# define RPL_TOPIC(nick, channel, topic) (":localhost " + nick + " " + channel + " :topic is \'" + topic + "\'\r\n")
-# define RPL_NOTOPIC(nick, channel) (":localhost " + nick + " " + channel + " :no topic" + "\r\n")
-# define ERR_CHANOPRIVSNEEDED(nick, channel) (":localhost 482 " + nick + " " + channel + " :You\'re not channel operator\r\n")

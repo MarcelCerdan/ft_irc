@@ -49,7 +49,6 @@ void	addToClientBuf(Server *serv, int const clientFd, std::string str)
 
 int	sendMsg(int const clientFd, std::string &buf)
 {
-	std::cout << clientFd << std::endl;
 	int ret = send(clientFd, buf.c_str(), buf.size(), MSG_NOSIGNAL);
 
 	if (ret < 0)
@@ -112,6 +111,16 @@ bool isOperator(Client &client, Channel &channel) {
 	std::map<const int, Client &> &chanOps = channel.getChanOps();
 	for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
 		if (itChanOps->second.getNickname() == clientName)
+			return (true);
+	}
+	return (false);
+}
+
+bool isMember(Client &client, Channel &channel) {
+	std::string clientName = client.getNickname();
+	std::vector<Client *> &members = channel.getMembers();
+	for (std::vector<Client *>::iterator itMembers = members.begin(); itMembers != members.end(); itMembers++) {
+		if ((*itMembers)->getNickname() == clientName)
 			return (true);
 	}
 	return (false);
