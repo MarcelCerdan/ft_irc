@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "main.hpp"
+#include <sstream>
 
 Client &findClient(Server *server, const int fd)
 {
@@ -91,4 +92,10 @@ void printChannelInfo(Channel &channel) {
         std::cout << it->second.getNickname() << " ";
     }
     std::cout << std::endl;
+}
+
+std::string intToString(int number) {
+    std::ostringstream oss;
+    oss << number;
+    return oss.str();
 }

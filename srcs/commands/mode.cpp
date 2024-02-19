@@ -176,11 +176,38 @@ static bool isOperator(Client &client, Channel &channel) {
 }
 
 static void displayAllModes(Server *serv, Client &client, Channel &channel, int clientFd) {
-	static_cast<void>(serv);
-	static_cast<void>(client);
-	static_cast<void>(channel);
-	static_cast<void>(clientFd);
-	addToClientBuf(serv, clientFd, "");
+	addToClientBuf(serv, clientFd, RPL_CHANNELMODEIS(client.getNickname(), channel.getName()));
+	addToClientBuf(serv, clientFd, "Invite-only : ");
+	if (channel.getModes()[e_i])
+		addToClientBuf(serv, clientFd, "yes");
+	else
+		addToClientBuf(serv, clientFd, "no");
+	addToClientBuf(serv, clientFd, "\n");
+	addToClientBuf(serv, clientFd, "Can change Topic: ");
+	if (channel.getModes()[e_t])
+		addToClientBuf(serv, clientFd, "Channel Operators");
+	else
+		addToClientBuf(serv, clientFd, "everyone");
+	addToClientBuf(serv, clientFd, "\n");
+	addToClientBuf(serv, clientFd, "Password required: ");
+	if (channel.getModes()[e_k]) {
+		addToClientBuf(serv, clientFd, "yes");
+		if (isOperator(client, channel))
+			addToClientBuf(serv, clientFd, " password: " + channel.getPassword());
+	}
+	else
+		addToClientBuf(serv, clientFd, "no");
+	addToClientBuf(serv, clientFd, "\n");
+	addToClientBuf(serv, clientFd, "User limit to channel: ");
+	if (channel.getModes()[e_l])
+		addToClientBuf(serv, clientFd, intToString(channel.getMaxUsers()));
+	else
+		addToClientBuf(serv, clientFd, "none");
+	addToClientBuf(serv, clientFd, "\r\n");
+
+	std::string creationDate = channel.getCreationDate();
+
+	addToClientBuf(serv, clientFd, RPL_CREATIONTIME(client.getNickname(), channel.getName(), creationDate));
 }
 
 void	mode(Server *serv, Message msg, int clientFd) {
