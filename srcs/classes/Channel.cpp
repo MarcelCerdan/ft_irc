@@ -21,16 +21,17 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 	std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	_password.clear();
 	_invites.clear();
+	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
 }
 
 Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
-
-	for (int i = 0; i < 3; i++)
-		_modes[i] = other._modes[i];
+	for (int i = 0; i <= 3; i++)
+		_modes[i] = false;
+	*this = other;
 }
 
 Channel::~Channel() {}
