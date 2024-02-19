@@ -12,21 +12,23 @@
 #include "classes/Channel.hpp"
 
 Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name),
+																		_modes(),
 																		_maxUsers(-1) {
 
 	Client &client = findClient(serv, clientFd);
 
 	_password.clear();
 	_invites.clear();
-	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
-	for (int i = 0; i <= 3; i++)
+	for (int i = 0; i < 3; i++)
 		_modes[i] = false;
 }
 
-Channel::Channel(const Channel &other) {
+Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
+	for (int i = 0; i < 3; i++)
+		_modes[i] = other._modes[i];
 	*this = other;
 }
 
@@ -41,7 +43,7 @@ Channel &Channel::operator=(const Channel &other) {
 		_name = other._name;
 		_password = other._password;
 		_maxUsers = other._maxUsers;
-		for (int i = 0; i <= 4; i++)
+		for (int i = 0; i < 3; i++)
 			_modes[i] = other._modes[i];
 	}
 	return (*this);
