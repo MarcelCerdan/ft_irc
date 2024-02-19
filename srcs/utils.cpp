@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "main.hpp"
+#include <sstream>
 
 Client &findClient(Server *server, const int fd)
 {
@@ -112,6 +113,7 @@ void printChannelInfo(Channel &channel) {
     std::cout << std::endl;
 }
 
+
 bool isOperator(Client &client, Channel &channel) {
 	std::string clientName = client.getNickname();
 
@@ -121,4 +123,10 @@ bool isOperator(Client &client, Channel &channel) {
 			return (true);
 	}
 	return (false);
+
+std::string intToString(int number) {
+    std::ostringstream oss;
+    oss << number;
+    return oss.str();
+
 }

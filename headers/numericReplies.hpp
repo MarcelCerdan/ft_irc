@@ -53,8 +53,8 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + ":Duplicate recipients. No message delivered")
 
 // MODE //
-# define RPL_CHANNELMODEIS(nick, channel) (":localhost 324 " + nick + " " + channel + "\r\n")
-# define RPL_CREATIONTIME(nick, channel) (":locahost 329 " + nick + " " + channel + "\r\n")
+# define RPL_CHANNELMODEIS(nick, channel) (":localhost 324 " + nick + " " + channel + ": \n")
+# define RPL_CREATIONTIME(nick, channel, creationDate) (":locahost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
 # define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + ": No such channel\r\n")
 # define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
 # define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")

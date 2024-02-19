@@ -12,6 +12,7 @@ enum e_modes {
 
 class Channel {
 private:
+	char 							_creationDate[100];
 	std::string						_name;
 	std::string						_topic;
 	std::string						_password;
@@ -33,8 +34,9 @@ public:
 	std::vector<std::string>		getInvites() const;
 	std::vector<Client *>			&getMembers();
 	std::map<const int, Client &>	&getChanOps();
-	const bool*	getModes() const;
-	int getMaxUsers() const;
+	const bool*						getModes() const;
+	int 							getMaxUsers() const;
+	char*							getCreationDate();
 
 	void	setTopic(std::string &newTopic);
 	void	setPassword(std::string newPassword);
@@ -49,5 +51,6 @@ public:
 //std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name);
 void printChannelInfo(Channel &channel);
 bool isOperator(Client &client, Channel &channel);
+std::string intToString(int number);
 
 #endif

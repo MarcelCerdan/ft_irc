@@ -16,12 +16,15 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 																		_maxUsers(-1) {
 
 	Client &client = findClient(serv, clientFd);
+	std::time_t currentTime = std::time(NULL);
 
+	std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	_password.clear();
 	_invites.clear();
+	_chanOps.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
 }
 
@@ -29,23 +32,24 @@ Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
 	for (int i = 0; i < 3; i++)
 		_modes[i] = other._modes[i];
-
 	*this = other;
 }
 
 Channel::~Channel() {}
 
 Channel &Channel::operator=(const Channel &other) {
-
 	if (this != &other)
 	{
+		std::time_t currentTime = std::time(NULL);
+
 		_members = other._members;
 		_chanOps = other._chanOps;
 		_name = other._name;
 		_password = other._password;
 		_maxUsers = other._maxUsers;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i <= 3; i++)
 			_modes[i] = other._modes[i];
+		std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	}
 	return (*this);
 }
@@ -65,6 +69,8 @@ std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
 const bool* Channel::getModes() const { return (_modes); };
 
 int Channel::getMaxUsers() const { return (_maxUsers); };
+
+char* Channel::getCreationDate() { return (_creationDate); }
 
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
