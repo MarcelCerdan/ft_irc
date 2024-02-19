@@ -66,4 +66,3 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define RPL_TOPIC(nick, channel, topic) (":localhost " + nick + " " + channel + " :topic is \'" + topic + "\'\r\n")
 # define RPL_NOTOPIC(nick, channel) (":localhost " + nick + " " + channel + " :no topic" + "\r\n")
 # define ERR_CHANOPRIVSNEEDED(nick, channel) (":localhost 482 " + nick + " " + channel + " :You\'re not channel operator\r\n")
-# define ERR_NOTONCHANNEL(nick, channel) (":localhost 442 " + nick + " " + channel + " :You're not on that channel\r\n")
