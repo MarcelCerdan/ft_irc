@@ -11,6 +11,7 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("MODE", &mode));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("INVITE", &invite));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("TOPIC", &topic));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("QUIT", &quit));
 }
 
 Server::Server(const Server &other) {
