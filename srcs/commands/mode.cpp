@@ -172,19 +172,19 @@ static void applyRemoveModes(std::string removeModes, Channel &channel, Message 
 
 static void displayAllModes(Server *serv, Client &client, Channel &channel, int clientFd) {
 	addToClientBuf(serv, clientFd, RPL_CHANNELMODEIS(client.getNickname(), channel.getName()));
-	addToClientBuf(serv, clientFd, "Invite-only : ");
+	addToClientBuf(serv, clientFd, "\tInvite-only : ");
 	if (channel.getModes()[e_i])
 		addToClientBuf(serv, clientFd, "yes");
 	else
 		addToClientBuf(serv, clientFd, "no");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "Can change Topic: ");
+	addToClientBuf(serv, clientFd, "\tCan change Topic: ");
 	if (channel.getModes()[e_t])
 		addToClientBuf(serv, clientFd, "Channel Operators");
 	else
 		addToClientBuf(serv, clientFd, "everyone");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "Password required: ");
+	addToClientBuf(serv, clientFd, "\tPassword required: ");
 	if (channel.getModes()[e_k]) {
 		addToClientBuf(serv, clientFd, "yes");
 		if (isOperator(client, channel))
@@ -193,7 +193,7 @@ static void displayAllModes(Server *serv, Client &client, Channel &channel, int 
 	else
 		addToClientBuf(serv, clientFd, "no");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "User limit to channel: ");
+	addToClientBuf(serv, clientFd, "\tUser limit to channel: ");
 	if (channel.getModes()[e_l])
 		addToClientBuf(serv, clientFd, intToString(channel.getMaxUsers()));
 	else

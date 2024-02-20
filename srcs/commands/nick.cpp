@@ -11,7 +11,11 @@
 /* ************************************************************************** */
 #include "main.hpp"
 
-bool	nickInUse(Server *serv, std::string &nick);
+//TODO client nickname can't have space ' ', comma ',', asterisk '*', question mark '?', exclamation mark '!', at sign '@', dot '.'
+//TODO client nickname can't start with '#', '&', '~', '+'
+
+static bool	nickInUse(Server *serv, std::string &nick);
+static bool isValidNickname(const std::string& nick);
 
 void nick(Server *serv, Message msg, int clientFd)
 {
@@ -20,16 +24,13 @@ void nick(Server *serv, Message msg, int clientFd)
 
 	if (!client.getGoodPass())
 		addToClientBuf(serv, clientFd, "Error : please input the password first\r\n");
-
 	else if (params.empty())
 		addToClientBuf(serv, clientFd, ERR_NONICKNAMEGIVEN(client.getNickname()));
-
-	else if (params[0].find_first_of("#:") != std::string::npos)
+	else if (!isValidNickname(params[0]))
 		addToClientBuf(serv, clientFd, ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
 
 	else if (nickInUse(serv, params[0]))
 		addToClientBuf(serv, clientFd, ERR_NICKNAMEINUSE(client.getNickname(), params[0]));
-
 	else
 	{
 		client.setNickname(params[0]);
@@ -42,7 +43,17 @@ void nick(Server *serv, Message msg, int clientFd)
 
 }
 
-bool	nickInUse(Server *serv, std::string &nick)
+static bool isValidNickname(const std::string& nick) {
+    if (nick.empty())
+        return (false);
+    if (nick[0] == ':' || nick[0] == '#' || nick[0] == '&' || nick[0] == '~' || nick[0] == '+')
+        return (false);
+    if (nick.find_first_of(" ,*?!@.") != std::string::npos)
+        return (false);
+    return (true);
+}
+
+static bool	nickInUse(Server *serv, std::string &nick)
 {
 	std::map<const int, Client>::iterator it;
 
