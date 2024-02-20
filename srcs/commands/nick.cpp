@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 #include "main.hpp"
 
-//TODO client nickname can't have space ' ', comma ',', asterisk '*', question mark '?', exclamation mark '!', at sign '@', dot '.'
-//TODO client nickname can't start with '#', '&', '~', '+'
-
 static bool	nickInUse(Server *serv, std::string &nick);
 static bool isValidNickname(const std::string& nick);
 

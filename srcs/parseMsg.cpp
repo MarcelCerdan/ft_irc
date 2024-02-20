@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 //TODO fix space pb in parsing when everything after a space is considered an argument. An arg can be separated by multiple spaces.
-//TODO channel name can't contain spaces ' ', commas ','.
 //TODO quit command
 
 #include "main.hpp"
