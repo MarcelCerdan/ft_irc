@@ -19,6 +19,10 @@ void topic(Server *serv, Message msg, int clientFd) {
 		Channel &channel = itChannel->second;
 
 		if (isOperator(client, channel) || isMember(client, channel)) {
+			if (channel.getModes()[e_t] && !isOperator(client, channel)) {
+				addToClientBuf(serv, clientFd, ERR_CHANOPRIVSNEEDED(client.getNickname(), channel.getName()));
+				return ;
+			}
 			if (paramsSize == 1) {
 				if (!channel.getTopic().empty())
 					addToClientBuf(serv, clientFd, RPL_TOPIC(client.getNickname(), channel.getName(), channel.getTopic()));

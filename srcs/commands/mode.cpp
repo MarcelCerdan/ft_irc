@@ -245,7 +245,7 @@ void	mode(Server *serv, Message msg, int clientFd) {
 			}
 		}
 		else {
-			addToClientBuf(serv, clientFd, ERR_NOTACHANNELOPERATOR(client.getNickname(), channel.getName()));
+			addToClientBuf(serv, clientFd, ERR_CHANOPRIVSNEEDED(client.getNickname(), channel.getName()));
 		}
 	}
 	else
