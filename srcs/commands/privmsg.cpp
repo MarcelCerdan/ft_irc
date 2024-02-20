@@ -18,7 +18,7 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 	std::map<const std::string, Channel> &channels = serv->getChannels();
 
 	preMessage = ":" + client.getNickname() + " PRIVMSG ";
-	message = ": " + msg.getParams()[1] + "\r\n";
+	message = " :" + msg.getParams()[1] + "\r\n";
 
 	std::istringstream iss(targets);
 	std::string target;
