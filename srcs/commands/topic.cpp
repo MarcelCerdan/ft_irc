@@ -1,7 +1,5 @@
 #include "main.hpp"
 
-//TODO: check if +t before using topic
-
 void topic(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
 	size_t paramsSize = msg.getParams().size();
