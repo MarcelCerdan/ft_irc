@@ -76,8 +76,14 @@ static void applySetModes(std::string setModes, Channel &channel, Message msg, i
 			channel.setMode(e_t, 1);
 		else if (setModes[i] == 'k') {
 			if (static_cast<size_t>(*paramToUse) < msg.getParams().size()) {
+				std::string keyword = msg.getParams()[*paramToUse];
+
+				if (keyword.find(' ') != std::string::npos) {
+					addToClientBuf(serv, clientFd, ":localhost " + nick + " :keyword can't contain space character (" ", 0x20)");
+					return ;
+				}
 				channel.setMode(e_k, 1);
-				channel.setPassword(msg.getParams()[*paramToUse]);
+				channel.setPassword(keyword);
 				*paramToUse += 1;
 			}
 			else

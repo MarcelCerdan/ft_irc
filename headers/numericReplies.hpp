@@ -60,3 +60,5 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
 # define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
 #endif
+
+//TODO set ERR_INVALIDMODEPARAM
