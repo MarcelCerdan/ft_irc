@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//TODO fix space pb in parsing when everything after a space is considered an argument. An arg can be separated by multiple spaces.
+//TODO quit command
+
 #include "main.hpp"
 
 int Server::parseMsg(int clientFd, Message &msg) {
@@ -64,14 +67,16 @@ int	Message::parseCmd(int cmdNmb) {
 	std::string	cpy = _splitMsg[cmdNmb];
 	if (cpy[0] == ':') // If there's a prefix
 	{
-		if (cpy.find_first_of(' ') != std::string::npos)
+		size_t prefixEnd = cpy.find_first_of(' ');
+		if (prefixEnd != std::string::npos)
 		{
-			_prefix.insert(0, cpy, 0, cpy.find_first_of(' '));
-			cpy.erase(0, cpy.find_first_of(' ') + 1);
+			_prefix.insert(0, cpy, 0, prefixEnd);
+			cpy.erase(0, prefixEnd + 1);
 		}
 	}
 
-	if (cpy.find_first_of(' ') == std::string::npos) // if it's a command without params
+	size_t cmdEnd = cpy.find_first_of(' ');
+	if (cmdEnd == std::string::npos) // if it's a command without params
 	{
 		_cmd = cpy;
 		if (_cmd.find('\r') != std::string::npos)
@@ -80,9 +85,9 @@ int	Message::parseCmd(int cmdNmb) {
 	else
 		_cmd.insert(0, cpy, 0, cpy.find_first_of(' '));
 
-	if (cpy.find_first_of(' ') != std::string::npos)
-	{
-		params.insert(0, cpy, cpy.find_first_of(' ') + 1);
+	size_t paramsStart = cpy.find_first_not_of(' ', cmdEnd);
+	if (paramsStart != std::string::npos) {
+		params.insert(0, cpy, paramsStart);
 		if (params.find('\r') != std::string::npos)
 			params.erase(params.find('\r'), 1);
 		splitParams(&params);
@@ -90,6 +95,8 @@ int	Message::parseCmd(int cmdNmb) {
 
 	for (size_t i = 0; _cmd[i]; i++)
 		_cmd[i] = static_cast<char>(std::toupper(_cmd[i]));
+	return (0);
+}
 
 	/*std::cout << PURPLE << "PREFIX : " << _prefix << std::endl
 				<< "CMD : " << _cmd << std::endl;
@@ -102,9 +109,6 @@ int	Message::parseCmd(int cmdNmb) {
 	}
 	std::cout << "PARAMS : " << _params.size() << std::endl;
 	std::cout << RESET << std::endl;*/
-
-	return (0);
-}
 
 void	Message::checkCmd()
 {

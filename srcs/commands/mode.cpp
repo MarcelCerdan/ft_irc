@@ -76,8 +76,14 @@ static void applySetModes(std::string setModes, Channel &channel, Message msg, i
 			channel.setMode(e_t, 1);
 		else if (setModes[i] == 'k') {
 			if (static_cast<size_t>(*paramToUse) < msg.getParams().size()) {
+				std::string keyword = msg.getParams()[*paramToUse];
+
+				if (keyword.find(' ') != std::string::npos) {
+					addToClientBuf(serv, clientFd, ":localhost " + nick + " :keyword can't contain space character (" ", 0x20)");
+					return ;
+				}
 				channel.setMode(e_k, 1);
-				channel.setPassword(msg.getParams()[*paramToUse]);
+				channel.setPassword(keyword);
 				*paramToUse += 1;
 			}
 			else
@@ -166,19 +172,19 @@ static void applyRemoveModes(std::string removeModes, Channel &channel, Message 
 
 static void displayAllModes(Server *serv, Client &client, Channel &channel, int clientFd) {
 	addToClientBuf(serv, clientFd, RPL_CHANNELMODEIS(client.getNickname(), channel.getName()));
-	addToClientBuf(serv, clientFd, "Invite-only : ");
+	addToClientBuf(serv, clientFd, "\tInvite-only : ");
 	if (channel.getModes()[e_i])
 		addToClientBuf(serv, clientFd, "yes");
 	else
 		addToClientBuf(serv, clientFd, "no");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "Can change Topic: ");
+	addToClientBuf(serv, clientFd, "\tCan change Topic: ");
 	if (channel.getModes()[e_t])
 		addToClientBuf(serv, clientFd, "Channel Operators");
 	else
 		addToClientBuf(serv, clientFd, "everyone");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "Password required: ");
+	addToClientBuf(serv, clientFd, "\tPassword required: ");
 	if (channel.getModes()[e_k]) {
 		addToClientBuf(serv, clientFd, "yes");
 		if (isOperator(client, channel))
@@ -187,7 +193,7 @@ static void displayAllModes(Server *serv, Client &client, Channel &channel, int 
 	else
 		addToClientBuf(serv, clientFd, "no");
 	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "User limit to channel: ");
+	addToClientBuf(serv, clientFd, "\tUser limit to channel: ");
 	if (channel.getModes()[e_l])
 		addToClientBuf(serv, clientFd, intToString(channel.getMaxUsers()));
 	else
