@@ -14,11 +14,13 @@ int	main(int ac, char **av) {
 
 	Server server(av[1], password);
 	server.start();
+	close(3);
+	return (0);
 }
 
 void	signalHandler(int signal) {
 	if (signal == SIGINT) // shutdown the server
-		exit (0);
+		return ;
 	else if (signal == SIGTSTP)
 		std::cout << "Received SIGTSTP (CTRL+Z)" << std::endl;
 }

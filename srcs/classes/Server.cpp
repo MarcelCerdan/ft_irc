@@ -52,21 +52,21 @@ void Server::start() {
 	int status = getaddrinfo(NULL, _port, &hints, &_servInfo);
 	if (status != 0) {
 		std::cout << RED << ERR_GETADDINFO << gai_strerror(status) << RESET << std::endl;
-		exit (1);
+		return ;
 	}
 
 	_socket = socket(_servInfo->ai_family, _servInfo->ai_socktype, _servInfo->ai_protocol);
 	if (_socket < 0) {
 		std::perror(ERR_SOCKET);
 		freeaddrinfo(_servInfo);
-		exit (1);
+		return ;
 	}
 
 	int optValue = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optValue, sizeof(optValue)) != 0) {
 		std::perror("setsockopt");
 		freeaddrinfo(_servInfo);
-		exit (1);
+		return ;
 	}
 
 	bind(_socket, _servInfo->ai_addr, _servInfo->ai_addrlen);
@@ -74,7 +74,7 @@ void Server::start() {
 	freeaddrinfo(_servInfo);
 	if (errno != 0) {
 		std::perror(ERR_START_SERV);
-		exit (1);
+		return ;
 	}
 
 	std::time_t currentTime = std::time(NULL);
@@ -87,6 +87,10 @@ void Server::start() {
 	launchServLoop();
 }
 
+//set-up to handle ctrl+c
+bool stopSignal = false;
+static void shutdown(int) { stopSignal = true; }
+
 void Server::launchServLoop() {
 
 	std::vector<pollfd>	pfds;
@@ -96,13 +100,15 @@ void Server::launchServLoop() {
 	server_pfd.events = POLLIN;
 	pfds.push_back(server_pfd);
 
-	while (1) {
+	signal(SIGINT, shutdown);
+
+	while (stopSignal == false) {
 		std::vector<pollfd> newPfds;
 
 		int events = poll((pollfd *)&pfds[0], (unsigned int) pfds.size(), -1);
-		if (events < 0) {
+		if (events < 0 && stopSignal == false) {
 			std::cerr << ERR_POLL << std::endl;
-			exit (1);
+			return ;
 		}
 
 		int eventsFound = 0;
