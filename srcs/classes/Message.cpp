@@ -41,8 +41,8 @@ void Message::splitMsg(std::string const &delimiter) {
 }
 
 void Message::splitParams(std::string *params) {
-	std::size_t posSpace;
 	std::string substr;
+	std::size_t posSpace;
 	std::size_t posColon;
 
 	while ((posSpace = params->find(' ')) != std::string::npos)
@@ -54,7 +54,8 @@ void Message::splitParams(std::string *params) {
 			return ;
 		}
 		substr = params->substr(0, posSpace);
-		_params.push_back(substr);
+		if (!substr.empty())
+			_params.push_back(substr);
 		params->erase(0, posSpace + 1);
 	}
 
@@ -63,6 +64,8 @@ void Message::splitParams(std::string *params) {
 		substr = params->substr(posColon + 1);
 		_params.push_back(substr);
 	}
-	else
-		_params.push_back(*params);
+	else {
+		if (!params->empty())
+			_params.push_back(*params);
+	}
 }
