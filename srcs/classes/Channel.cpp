@@ -104,6 +104,20 @@ void Channel::addChanOps(const int clientFd, Client &newChanOps) {
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, newChanOps));
 }
 
+void Channel::eraseMember(Client &client) {
+	_chanOps.erase(client.getSocket());
+
+	for (std::vector<Client *>::iterator it = _members.begin(); it != _members.end(); it++) {
+		if ((*it)->getNickname() == client.getNickname())
+			_members.erase(it);
+	}
+
+	for (std::vector<std::string>::iterator it = _invites.begin(); it != _invites.end(); it++) {
+		if (*it == client.getNickname())
+			_invites.erase(it);
+	}
+}
+
 /*std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name)
 {
 	std::map<const std::string, Channel> channelsList = serv->getChannels();

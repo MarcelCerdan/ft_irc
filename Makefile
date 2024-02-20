@@ -39,7 +39,8 @@ SRCS_LST 	= 	main.cpp \
 				commands/join.cpp \
 				commands/privmsg.cpp \
 				commands/mode.cpp \
-				commands/invite.cpp
+				commands/invite.cpp \
+				commands/topic.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 
