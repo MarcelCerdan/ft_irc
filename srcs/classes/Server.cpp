@@ -216,10 +216,20 @@ void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator 
 	Client &client = _clients.find(it->fd)->second;
 	std::vector<std::string> channels = client.getChannels();
 
-	for (size_t i = 0; i < channels.size(); i++)
-		findChannel(this, channels[i]).eraseMember(client);
+	for (size_t i = 0; i < channels.size(); i++) {
+		Channel &channel = findChannel(this, channels[i]);
+		channel.eraseMember(this, client.getSocket());
+		removeChannel(channels[i]);
+	}
 
 	_clients.erase(it->fd);
 	close(it->fd);
 	it = pfds->erase(it);
+}
+
+void Server::removeChannel(std::string &chanName) {
+	Channel &channel = findChannel(this, chanName);
+
+	if (channel.getChanOps().empty() && channel.getMembers().empty())
+		_channels.erase(chanName);
 }

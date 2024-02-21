@@ -40,6 +40,7 @@ public:
 	void	registerClient(Message	&msg, int	clientFd);
 	void	managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::iterator &it);
 	void	delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it);
+	void	removeChannel(std::string &chanName);
 	int		parseMsg(int clientFd, class Message &msg);
 
 };

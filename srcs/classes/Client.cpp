@@ -68,3 +68,12 @@ void Client::freeReadBuffer() { _readBuff.clear(); }
 void Client::addChannel(const std::string &channel) {
 	_channels.push_back(channel);
 }
+
+void Client::removeChannel(std::string const &channel) {
+	for (std::vector<std::string>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+		if (*it == channel) {
+			_channels.erase(it);
+			break ;
+		}
+	}
+}

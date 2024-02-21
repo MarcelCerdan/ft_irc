@@ -6,7 +6,7 @@
 /*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 14:42:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/21 13:26:48 by mthibaul         ###   ########.fr       */
+/*   Updated: 2024/02/21 17:54:53 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,12 @@ void	kick(Server *serv, Message msg, int clientFd) {
 
 	std::vector<std::string> targets = splitTargets(msg.getParams()[1]);
 
-	for (size_t i = 0; i < targets.size(); i++) {
+	for (size_t i = 0; i < targets.size(); i++) {	
 		if (checkClient(serv, targets[i], clientFd) && targetIsOnChannel(clientFd, msg.getParams()[0], serv, targets[i])) {
 			Client &target = getClient(serv, targets[i]);
 			Channel &channel = findChannel(serv, msg.getParams()[0]);
 
-			channel.eraseMember(target);
+			channel.eraseMember(serv, target.getSocket());
 
 			sendKickMsg(serv, clientFd, targets[i], msg);
 		}
@@ -82,6 +82,11 @@ static bool targetIsOnChannel(int clientFd, std::string &chanName, Server *serv,
 	Client &client = findClient(serv, clientFd);
 	Client &target = getClient(serv, targetName);
 	Channel &channel = findChannel(serv, chanName);
+
+	if (targetName == client.getNickname()) {
+		addToClientBuf(serv, clientFd, ":localhost " + client.getNickname() + " KICK :You can't kick yourself\r\n");
+		return (false);
+	}
 
 	if (channel.getChanOps().find(target.getSocket()) != channel.getChanOps().end())
 		return (true);

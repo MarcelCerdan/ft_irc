@@ -43,6 +43,7 @@ public:
 	void		freeSendBuffer();
 	void		freeReadBuffer();
 	void		addChannel(std::string const &channel);
+	void		removeChannel(std::string const &channel);
 
 };
 

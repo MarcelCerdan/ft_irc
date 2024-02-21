@@ -21,8 +21,9 @@ void	part(Server *serv, Message msg, int clientFd) {
 		if (checkErrors(serv, splitedChannels[i], clientFd)) {
 			Channel &channel = findChannel(serv, splitedChannels[i]);
 
-			channel.eraseMember(client);
+			channel.eraseMember(serv, clientFd);
 			sendPartMsg(serv, clientFd, splitedChannels[i], partMsg);
+			serv->removeChannel(splitedChannels[i]);
 		}	
 	}
 }
@@ -55,6 +56,4 @@ static void	sendPartMsg(Server *serv, int clientFd, std::string channelName, std
 
 	for (size_t i = 0; i < channel.getMembers().size(); i++)
 		addToClientBuf(serv, channel.getMembers()[i]->getSocket(), PARTMSG(client.getNickname(), channelName, msg));
-
-	addToClientBuf(serv, clientFd, PARTUSERMSG(client.getNickname(), channelName, msg));
 }

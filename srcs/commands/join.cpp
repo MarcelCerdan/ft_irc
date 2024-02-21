@@ -6,8 +6,9 @@ bool	inviteMode(Channel &channel, std::string &nick);
 bool	checkChanName(std::string chanName);
 bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
 
-void join(Server *serv, Message msg, int clientFd)
-{
+void join(Server *serv, Message msg, int clientFd) {
+	Client &client = findClient(serv, clientFd);
+
 	if (!checkJoinParams(msg, serv, clientFd))
 		return ;
 
@@ -25,7 +26,7 @@ void join(Server *serv, Message msg, int clientFd)
 	else if (!existingChan(it->second, serv, clientFd))
 		return;
 
-	findClient(serv, clientFd).addChannel(it->second.getName());
+	client.addChannel(msg.getParams()[0]);
 	printChannelInf(serv, clientFd, it->second);
 }
 

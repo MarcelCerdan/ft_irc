@@ -6,7 +6,7 @@
 /*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 22:32:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/21 13:16:24 by mthibaul         ###   ########.fr       */
+/*   Updated: 2024/02/21 18:00:21 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	printServInfo(Server *serv, int clientFd)
 }
 
 bool	checkClient(Server *serv, std::string &nick, int clientFd) {
-	std::map<const int, Client> clientsList = serv->getClients();
+	std::map<const int, Client> &clientsList = serv->getClients();
 
 	for (std::map<const int, Client>::iterator it = clientsList.begin(); it != clientsList.end(); it++) {
 		if (it->second.getNickname() == nick)

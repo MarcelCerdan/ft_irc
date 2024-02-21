@@ -47,7 +47,7 @@ public:
 	void	addMember(Client *newMember);
 	void	addChanOps(int clientFd, Client &newChanOps);
 
-	void	eraseMember(Client &client);
+	void	eraseMember(Server *serv, int clientFd);
 };
 
 //std::map<const std::string, Channel>::iterator findChannel(Server *serv, std::string const &name);

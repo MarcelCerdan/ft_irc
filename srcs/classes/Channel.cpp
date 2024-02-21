@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:53:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/07 12:53:00 by mthibaul         ###   ########lyon.fr   */
+/*   Updated: 2024/02/21 18:02:11 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "classes/Channel.hpp"
+
+#include "main.hpp"
 
 Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(name),
 																		_modes(),
@@ -104,13 +105,18 @@ void Channel::addChanOps(const int clientFd, Client &newChanOps) {
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, newChanOps));
 }
 
-void Channel::eraseMember(Client &client) {
-	if (_chanOps.find(client.getSocket()) != _chanOps.end())
+void Channel::eraseMember(Server *serv, int clientFd) {
+	Client &client = findClient(serv, clientFd);
+	
+	if (_chanOps.find(client.getSocket()) != _chanOps.end()) {
 		_chanOps.erase(client.getSocket());
-
+		client.removeChannel(this->getName());
+	}
+	
 	for (std::vector<Client *>::iterator it = _members.begin(); it != _members.end(); it++) {
 		if ((*it)->getNickname() == client.getNickname()) {
 			_members.erase(it);
+			client.removeChannel(this->getName());
 			break ;
 		}
 	}

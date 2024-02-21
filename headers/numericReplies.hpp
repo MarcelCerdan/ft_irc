@@ -32,7 +32,7 @@
 # define JOINCHANNEL(nick, channel) (":" + nick + " JOIN " + channel + "\r\n")
 # define RPL_TOPIC(nick, channel, topic) (":localhost 332 " + nick + " " + channel + " :" + topic + "\r\n")
 # define RPL_NOTOPIC(nick, channel) (":localhost 331 " + nick + " " + channel + " :No topic is set\r\n")
-# define RPL_NAMREPLY(nick, symbol, channel) (":localhost 353 " + nick + " " + symbol + channel + " :")
+# define RPL_NAMREPLY(nick, symbol, channel) (":localhost 353 " + nick + " " + symbol + " " + channel + " :")
 # define RPL_ENDOFNAMES(nick, channel) (":localhost 366 " + nick + " " + channel + " :End of /NAMES list\r\n")
 
 /*----- REPLIES -----*/
@@ -69,7 +69,6 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 
 // PART //
 # define PARTMSG(nick, chan, msg) (":" + nick + " PART " + chan + msg + "\r\n")
-# define PARTUSERMSG(nick, chan, msg) (":localhost " + nick + " PART " + chan + msg + "\r\n")
 
 #endif
 
