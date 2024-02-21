@@ -12,7 +12,7 @@
 #include "main.hpp"
 
 static bool	clientOnChannel(int clientFd, std::string &chanName, Server *serv);
-static bool invitedOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient);
+static bool	targetOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient);
 
 void invite(Server *serv, Message msg, int clientFd) {
 
@@ -23,10 +23,10 @@ void invite(Server *serv, Message msg, int clientFd) {
 		return ;
 	}
 
-	if (!checkClient(serv, msg, clientFd) || !checkChannel(serv, msg, clientFd))
+	if (!checkClient(serv, msg.getParams()[0], clientFd) || !checkChannel(serv, msg.getParams()[1], clientFd))
 		return ;
 
-	if (!clientOnChannel(clientFd, msg.getParams()[1], serv) || invitedOnChannel(clientFd, msg.getParams()[1], serv, msg.getParams()[0]))
+	if (!clientOnChannel(clientFd, msg.getParams()[1], serv) || targetOnChannel(clientFd, msg.getParams()[1], serv, msg.getParams()[0]))
 		return ;
 
 	Channel &channel = findChannel(serv, msg.getParams()[1]);
@@ -44,8 +44,10 @@ static bool	clientOnChannel(int	clientFd, std::string &chanName, Server *serv) {
 	if (isOperator(client, channel))
 		return (true);
 
-	if (channel.getMembers().empty())
+	if (channel.getMembers().empty()) {
+		addToClientBuf(serv, client.getSocket(), ERR_NOTONCHANNEL(client.getNickname(), channel.getName()));
 		return (false);
+	}
 
 	for (size_t i = 0; i < channel.getMembers().size(); i++) {
 		if (channel.getMembers()[i]->getNickname() == client.getNickname()) {
@@ -62,7 +64,7 @@ static bool	clientOnChannel(int	clientFd, std::string &chanName, Server *serv) {
 	return (false);
 }
 
-static bool invitedOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient) {
+static bool targetOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &invitedClient) {
 	Client	&client = findClient(serv, clientFd);
 	Client	&clientInvited = getClient(serv, invitedClient);
 	Channel &channel = findChannel(serv, chanName);

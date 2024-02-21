@@ -5,8 +5,11 @@
 
 # define ERR_NEEDMOREPARAMS(nick, command) (":localhost 461 " + nick + " " + command + " :Not enough parameters\r\n")
 # define ERR_ALREADYREGISTERED(nick) (":localhost 462 " + nick + " :You may not reregister\r\n")
+
+// CHANNELS //
 # define ERR_CHANOPRIVSNEEDED(nick, chan) (":localhost 482 " + nick + " " + chan + " :You're not channel operator\r\n")
 # define ERR_NOTONCHANNEL(nick, chan) (":localhost 442 " + nick + " " + chan + " :You're not on that channel\r\n")
+# define ERR_USERNOTINCHANNEL(nick, target, chan) (":localhost 441 " + nick + " " + target + " " + chan + " :They aren't on that channel\r\n")
 
 // PASS //
 # define ERR_PASSWDMISMATCH(nick) (":localhost 464 " + nick + " :Password incorrect\r\n")
@@ -55,10 +58,14 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 // MODE //
 # define RPL_CHANNELMODEIS(nick, channel) (":localhost 324 " + nick + " " + channel + ": \n")
 # define RPL_CREATIONTIME(nick, channel, creationDate) (":locahost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
-# define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + ": No such channel\r\n")
+# define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + " :No such channel\r\n")
 # define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
 # define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
 # define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
 # define ERR_NOTACHANNELOPERATOR(nick, channel) (":localhost " + nick + " " + channel + " :Not a channel operator\r\n")
+
+// KICK //
+# define KICKMSG(nick, target, chan, msg) (":" + nick + " KICK " + chan + " " + target + " " + msg + "\r\n")
+# define KICKTARGETMSG(nick, chan, msg) (":localhost " + nick + " kicked you from " + chan + " " + msg + "\r\n")
 
 #endif
