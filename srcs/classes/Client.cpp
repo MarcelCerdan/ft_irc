@@ -61,6 +61,10 @@ void Client::setUsername(const std::string &username) { _username = username; }
 
 void Client::setIsRegister() { _isRegistered = true; }
 
+void Client::freeSendBuffer() { _sendBuff.clear(); }
+
+void Client::freeReadBuffer() { _readBuff.clear(); }
+
 void Client::addChannel(const std::string &channel) {
 	_channels.push_back(channel);
 }

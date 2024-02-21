@@ -25,5 +25,6 @@ void	mode(Server *serv, Message msg, int clientFd);
 void	invite(Server *serv, Message msg, int clientFd);
 void 	topic(Server *serv, Message msg, int clientFd);
 void 	quit(Server *serv, Message msg, int clientFd);
+void	kick(Server *serv, Message msg, int clientFd);
 
 #endif

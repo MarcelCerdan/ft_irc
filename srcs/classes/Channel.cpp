@@ -105,16 +105,21 @@ void Channel::addChanOps(const int clientFd, Client &newChanOps) {
 }
 
 void Channel::eraseMember(Client &client) {
-	_chanOps.erase(client.getSocket());
+	if (_chanOps.find(client.getSocket()) != _chanOps.end())
+		_chanOps.erase(client.getSocket());
 
 	for (std::vector<Client *>::iterator it = _members.begin(); it != _members.end(); it++) {
-		if ((*it)->getNickname() == client.getNickname())
+		if ((*it)->getNickname() == client.getNickname()) {
 			_members.erase(it);
+			break ;
+		}
 	}
 
 	for (std::vector<std::string>::iterator it = _invites.begin(); it != _invites.end(); it++) {
-		if (*it == client.getNickname())
+		if (*it == client.getNickname()){
 			_invites.erase(it);
+			break ;
+		}
 	}
 }
 

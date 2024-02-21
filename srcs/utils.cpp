@@ -67,27 +67,27 @@ void	printServInfo(Server *serv, int clientFd)
 	addToClientBuf(serv, clientFd, RPL_MYINFO(client.getNickname()));
 }
 
-bool	checkClient(Server *serv, Message msg, int clientFd) {
+bool	checkClient(Server *serv, std::string &nick, int clientFd) {
 	std::map<const int, Client> clientsList = serv->getClients();
 
 	for (std::map<const int, Client>::iterator it = clientsList.begin(); it != clientsList.end(); it++) {
-		if (it->second.getNickname() == msg.getParams()[0])
+		if (it->second.getNickname() == nick)
 			return (true);
 	}
 
-	addToClientBuf(serv, clientFd, ERR_NOSUCHNICK(msg.getParams()[0]));
+	addToClientBuf(serv, clientFd, ERR_NOSUCHNICK(nick));
 	return (false);
 }
 
-bool	checkChannel(Server *serv, Message msg, int clientFd) {
+bool	checkChannel(Server *serv, std::string &channelName, int clientFd) {
 	std::map<const std::string, Channel> channelsList = serv->getChannels();
 
 	for (std::map<const std::string, Channel>::iterator it = channelsList.begin(); it != channelsList.end(); it++) {
-		if (it->second.getName() == msg.getParams()[1])
+		if (it->second.getName() == channelName)
 			return (true);
 	}
 
-	addToClientBuf(serv, clientFd, ERR_NOSUCHCHANNEL(findClient(serv, clientFd).getNickname(), msg.getParams()[1]));
+	addToClientBuf(serv, clientFd, ERR_NOSUCHCHANNEL(findClient(serv, clientFd).getNickname(), channelName));
 	return (false);
 }
 

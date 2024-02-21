@@ -40,6 +40,8 @@ public:
 	bool		&getIsRegistered();
 	int 		getSocket();
 
+	void		freeSendBuffer();
+	void		freeReadBuffer();
 	void		addChannel(std::string const &channel);
 
 };
