@@ -49,7 +49,6 @@ void	addToClientBuf(Server *serv, int const clientFd, std::string str)
 
 int	sendMsg(int const clientFd, std::string &buf)
 {
-	std::cout << clientFd << std::endl;
 	int ret = send(clientFd, buf.c_str(), buf.size(), MSG_NOSIGNAL);
 
 	if (ret < 0)
