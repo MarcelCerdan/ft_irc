@@ -210,8 +210,7 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 }
 
 void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it) {
-	close(it->fd);
-	pfds->erase(it);
+	std::vector<pollfd>::iterator copyIt = it;
 
 	Client &client = _clients.find(it->fd)->second;
 	std::vector<std::string> channels = client.getChannels();
@@ -220,4 +219,6 @@ void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator 
 		findChannel(this, channels[i]).eraseMember(client);
 
 	_clients.erase(it->fd);
+	close(it->fd);
+	pfds->erase(copyIt);
 }

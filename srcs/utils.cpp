@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 22:32:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/01/25 22:32:00 by mthibaul         ###   ########lyon.fr   */
+/*   Updated: 2024/02/21 12:10:00 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	addToClientBuf(Server *serv, int const clientFd, std::string str)
 
 int	sendMsg(int const clientFd, std::string &buf)
 {
+	std::cout << clientFd << std::endl;
 	int ret = send(clientFd, buf.c_str(), buf.size(), MSG_NOSIGNAL);
 
 	if (ret < 0)
