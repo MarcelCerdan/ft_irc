@@ -116,6 +116,16 @@ bool isOperator(Client &client, Channel &channel) {
 	return (false);
 }
 
+bool isMember(Client &client, Channel &channel) {
+	std::string clientName = client.getNickname();
+	std::vector<Client *> &members = channel.getMembers();
+	for (std::vector<Client *>::iterator itMembers = members.begin(); itMembers != members.end(); itMembers++) {
+		if ((*itMembers)->getNickname() == clientName)
+			return (true);
+	}
+	return (false);
+}
+
 std::string intToString(int number) {
     std::ostringstream oss;
     oss << number;

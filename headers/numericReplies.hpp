@@ -62,10 +62,11 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
 # define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
 # define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
-# define ERR_NOTACHANNELOPERATOR(nick, channel) (":localhost " + nick + " " + channel + " :Not a channel operator\r\n")
 
 // KICK //
 # define KICKMSG(nick, target, chan, msg) (":" + nick + " KICK " + chan + " " + target + " " + msg + "\r\n")
 # define KICKTARGETMSG(nick, chan, msg) (":localhost " + nick + " kicked you from " + chan + " " + msg + "\r\n")
 
 #endif
+
+//TODO set ERR_INVALIDMODEPARAM

@@ -53,9 +53,8 @@ bool	checkChanName(std::string chanName)
 	if (chanName[0] != '#')
 		return (false);
 
-	if (chanName.find(' ') != std::string::npos)
+	if (chanName.find_first_of(" ,") != std::string::npos)
 		return (false);
-
 	return (true);
 
 }
