@@ -181,15 +181,15 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else {
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
-		if (client.getReadBuff().find("\r\n") == std::string::npos)
-			client.setReadBuff("\r\n");
+		//if (client.getReadBuff().find("\r\n") == std::string::npos)
+		//	client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
-		if (client.getReadBuff().find("\r\n") != std::string::npos)
+		if (client.getReadBuff().find("\n") != std::string::npos)
 		{
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
-			if (client.getReadBuff().find("\r\n") != std::string::npos)
-				client.getReadBuff().clear();
+			if (client.getReadBuff().find("\n") != std::string::npos)
+				client.freeReadBuffer();
 		}
 	}
 }
@@ -199,13 +199,8 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 	Client &client = findClient(this, it->fd);
 
 	(void) pfds;
-	/*if (!client)
-			std::cerr << RED << "[Server] Can't find the client" << RESET << std::endl;*/
-	//else
-//	{
-		sendMsg(it->fd, client.getSendBuff());
-		client.getSendBuff().clear();
-//	}
+	sendMsg(it->fd, client.getSendBuff());
+	client.freeSendBuffer();
 }
 
 void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it) {
