@@ -13,6 +13,8 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("TOPIC", &topic));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("KICK", &kick));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("QUIT", &quit));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("PART", &part));
+
 }
 
 Server::Server(const Server &other) {
@@ -211,8 +213,6 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 }
 
 void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it) {
-	std::vector<pollfd>::iterator copyIt = it;
-
 	Client &client = _clients.find(it->fd)->second;
 	std::vector<std::string> channels = client.getChannels();
 
@@ -221,5 +221,5 @@ void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator 
 
 	_clients.erase(it->fd);
 	close(it->fd);
-	pfds->erase(copyIt);
+	it = pfds->erase(it);
 }

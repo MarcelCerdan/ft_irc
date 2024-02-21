@@ -67,6 +67,10 @@ operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel 
 # define KICKMSG(nick, target, chan, msg) (":" + nick + " KICK " + chan + " " + target + " " + msg + "\r\n")
 # define KICKTARGETMSG(nick, chan, msg) (":localhost " + nick + " kicked you from " + chan + " " + msg + "\r\n")
 
+// PART //
+# define PARTMSG(nick, chan, msg) (":" + nick + " PART " + chan + msg + "\r\n")
+# define PARTUSERMSG(nick, chan, msg) (":localhost " + nick + " PART " + chan + msg + "\r\n")
+
 #endif
 
 //TODO set ERR_INVALIDMODEPARAM

@@ -6,7 +6,7 @@
 /*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 14:42:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/21 11:01:02 by mthibaul         ###   ########.fr       */
+/*   Updated: 2024/02/21 13:26:48 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	kick(Server *serv, Message msg, int clientFd) {
 	std::vector<std::string> targets = splitTargets(msg.getParams()[1]);
 
 	for (size_t i = 0; i < targets.size(); i++) {
-
 		if (checkClient(serv, targets[i], clientFd) && targetIsOnChannel(clientFd, msg.getParams()[0], serv, targets[i])) {
 			Client &target = getClient(serv, targets[i]);
 			Channel &channel = findChannel(serv, msg.getParams()[0]);
@@ -77,22 +76,6 @@ static bool clientIsOperator(int clientFd, std::string &chanName, Server *serv) 
 
 	addToClientBuf(serv, client.getSocket(), ERR_NOTONCHANNEL(client.getNickname(), channel.getName()));
 	return (false);
-}
-
-std::vector<std::string>	splitTargets(std::string &targets) {
-	std::vector<std::string> splitedTargets;
-	size_t	i = targets.find_first_of(',');
-	size_t	prev = 0;
-
-	while (i != std::string::npos) {
-		std::string substr = targets.substr(prev, i - prev);
-		splitedTargets.push_back(substr);
-		prev = i + 1;
-		i = targets.find_first_of(',', prev);
-	}
-	splitedTargets.push_back(targets.substr(prev));
-
-	return (splitedTargets);
 }
 
 static bool targetIsOnChannel(int clientFd, std::string &chanName, Server *serv, const std::string &targetName) {

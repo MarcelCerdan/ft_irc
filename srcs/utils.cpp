@@ -6,7 +6,7 @@
 /*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 22:32:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/21 12:10:00 by mthibaul         ###   ########.fr       */
+/*   Updated: 2024/02/21 13:16:24 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ bool isOperator(Client &client, Channel &channel) {
 bool isMember(Client &client, Channel &channel) {
 	std::string clientName = client.getNickname();
 	std::vector<Client *> &members = channel.getMembers();
+
 	for (std::vector<Client *>::iterator itMembers = members.begin(); itMembers != members.end(); itMembers++) {
 		if ((*itMembers)->getNickname() == clientName)
 			return (true);
@@ -130,4 +131,20 @@ std::string intToString(int number) {
     std::ostringstream oss;
     oss << number;
     return oss.str();
+}
+
+std::vector<std::string>	splitTargets(std::string &targets) {
+	std::vector<std::string> splitedTargets;
+	size_t	i = targets.find_first_of(',');
+	size_t	prev = 0;
+
+	while (i != std::string::npos) {
+		std::string substr = targets.substr(prev, i - prev);
+		splitedTargets.push_back(substr);
+		prev = i + 1;
+		i = targets.find_first_of(',', prev);
+	}
+	splitedTargets.push_back(targets.substr(prev));
+
+	return (splitedTargets);
 }

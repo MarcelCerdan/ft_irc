@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/28 03:44:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/01/28 03:44:00 by mthibaul         ###   ########lyon.fr   */
+/*   Updated: 2024/02/21 13:44:00 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef COMMANDS_HPP
+
+#ifndef	COMMANDS_HPP
 # define COMMANDS_HPP
 
 # include "main.hpp"
@@ -26,5 +27,6 @@ void	invite(Server *serv, Message msg, int clientFd);
 void 	topic(Server *serv, Message msg, int clientFd);
 void 	quit(Server *serv, Message msg, int clientFd);
 void	kick(Server *serv, Message msg, int clientFd);
+void	part(Server *serv, Message msg, int clientFd);
 
 #endif
