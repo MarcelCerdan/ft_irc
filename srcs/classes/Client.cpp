@@ -1,8 +1,8 @@
 #include "classes/Client.hpp"
 
-Client::Client(const int socket) : _socket(socket), _goodPass(false), _isRegistered(false) {}
+Client::Client(const int socket) : _socket(socket), _goodPass(false), _isRegistered(false), _isConnected(true) {}
 
-Client::Client(const Client &other) : _socket(other._socket), _goodPass(other._goodPass), _isRegistered(other._isRegistered) {
+Client::Client(const Client &other) : _socket(other._socket), _goodPass(other._goodPass), _isRegistered(other._isRegistered), _isConnected(other._isConnected) {
 	*this = other;
 }
 
@@ -10,8 +10,7 @@ Client::~Client() {}
 
 Client &Client::operator=(const Client &other) {
 
-	if (this != &other)
-	{
+	if (this != &other) {
 		_readBuff = other._readBuff;
 		_sendBuff = other._sendBuff;
 		_nickname = other._nickname;
@@ -19,6 +18,7 @@ Client &Client::operator=(const Client &other) {
 		_realName = other._realName;
 		_goodPass = other._goodPass;
 		_isRegistered = other._isRegistered;
+		_isConnected = other._isConnected;
 	}
 	return (*this);
 }
@@ -35,23 +35,21 @@ std::string &Client::getRealName() { return (_realName); }
 
 std::vector<std::string> &Client::getChannels() { return (_channels); }
 
+bool Client::getIsConnected() const { return (_isConnected); }
+
 bool &Client::getGoodPass() { return (_goodPass); }
 
 bool &Client::getIsRegistered() { return (_isRegistered); }
 
 int Client::getSocket() { return (_socket); }
 
-void Client::setReadBuff(const std::string &msg) {
+void Client::setReadBuff(const std::string &msg) { _readBuff += msg; }
 
-	_readBuff += msg;
-}
-
-void Client::setSendBuff(const std::string &msg) {
-
-	_sendBuff += msg;
-}
+void Client::setSendBuff(const std::string &msg) { _sendBuff += msg; }
 
 void Client::setNickname(const std::string &newNickname) { _nickname = newNickname; }
+
+void Client::setIsConnected(bool newState) { _isConnected = newState; }
 
 void Client::setGoodPass() { _goodPass = true; }
 
