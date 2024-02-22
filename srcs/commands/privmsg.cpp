@@ -47,12 +47,16 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 		std::map<std::string, Channel>::iterator itChannel = channels.find(targetChannelName);			
 		if (itChannel != channels.end()) {
 			std::vector<Client *> &members = itChannel->second.getMembers();
-			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++)
-				addToClientBuf(serv, (*itMember)->getSocket(), preMessage + targetChannelName + message);
+			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++) {
+				if ((*itMember)->getSocket() != clientFd)
+					addToClientBuf(serv, (*itMember)->getSocket(), preMessage + targetChannelName + message);
+			}
 
 			std::map<const int, Client &> &chanOps = itChannel->second.getChanOps();
-			for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++)
-				addToClientBuf(serv, itChanOps->second.getSocket(), preMessage + targetChannelName + message);
+			for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
+				if (itChanOps->second.getSocket() != clientFd)
+					addToClientBuf(serv, itChanOps->second.getSocket(), preMessage + targetChannelName + message);
+			}
 		}
 		else
 			addToClientBuf(serv, clientFd, ERR_CANNOTSENDTOCHAN(client.getNickname(), targetChannelName));
