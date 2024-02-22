@@ -46,6 +46,10 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 		std::string targetChannelName = *it1;
 		std::map<std::string, Channel>::iterator itChannel = channels.find(targetChannelName);			
 		if (itChannel != channels.end()) {
+			if (!isMember(client, itChannel->second) && !isOperator(client, itChannel->second)) {
+				addToClientBuf(serv, clientFd, ERR_NOTONCHANNEL(client.getNickname(), targetChannelName));
+				return ;
+			}
 			std::vector<Client *> &members = itChannel->second.getMembers();
 			for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); itMember++)
 				addToClientBuf(serv, (*itMember)->getSocket(), preMessage + targetChannelName + message);
