@@ -6,6 +6,9 @@ bool	inviteMode(Channel &channel, std::string &nick);
 bool	checkChanName(std::string chanName);
 bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
 
+
+/* TO DO : Handle keys in channels and list of channels to join */
+
 void join(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
 
