@@ -157,7 +157,6 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 		newPfds.push_back(clientPfd);
 		_clients.insert(std::pair<const int, Client>(clientSocket, newClient));
 
-		std::cout << "Register : " << newClient.getIsRegistered() << std::endl;
 		std::cout << BLUE << "Server added client #" << clientSocket << RESET << std::endl;
 
 	}
@@ -194,10 +193,10 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 		//	client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
-		if (client.getReadBuff().find("\n") != std::string::npos)
+		if (client.getReadBuff().find('\n') != std::string::npos)
 		{
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
-			if (client.getReadBuff().find("\n") != std::string::npos)
+			if (client.getReadBuff().find('\n') != std::string::npos)
 				client.freeReadBuffer();
 		}
 	}
