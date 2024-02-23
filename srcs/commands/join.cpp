@@ -4,7 +4,7 @@ void	printChannelInf(Server *serv, int clientFd, Channel &channel);
 static bool	existingChan(Channel &channel, Server *serv, int clientFd);
 static bool	inviteMode(Channel &channel, std::string &nick);
 static bool	checkKey(Server *serv, Message msg, std::string &chanName, size_t i, int clientFd);
-static bool	checkChanName(Server *serv, int clientFd, std::string chanName);
+static bool	checkChan(Server *serv, int clientFd, std::string chanName);
 
 
 /* TO DO : Handle keys in channels and list of channels to join */
@@ -21,7 +21,7 @@ void join(Server *serv, Message msg, int clientFd) {
 	std::map<const std::string, Channel> &channelsList = serv->getChannels();
 
 	for (size_t i = 0; i < targetChannels.size(); i++) {
-		if (checkChanName(serv, clientFd, targetChannels[i]) && checkKey(serv, msg, targetChannels[i], i, clientFd)) {
+		if (checkChan(serv, clientFd, targetChannels[i]) && checkKey(serv, msg, targetChannels[i], i, clientFd)) {
 			std::map<const std::string, Channel>::iterator it = channelsList.find(targetChannels[i]);
 
 			if (it == channelsList.end())
@@ -42,11 +42,22 @@ void join(Server *serv, Message msg, int clientFd) {
 }
 
 
-static bool	checkChanName(Server *serv, const int clientFd, std::string chanName)
+static bool	checkChan(Server *serv, const int clientFd, std::string chanName)
 {
+	Channel &chan = findChannel(serv, chanName);
+	Client &client = findClient(serv, clientFd);
+
 	if (chanName[0] != '#' || chanName.find_first_of(" ,") != std::string::npos) {
 		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(chanName));
 		return (false);
+	}
+
+	if (chan.getModes()[e_l]) {
+		size_t clientNb = chan.getChanOps().size() + chan.getMembers().size();
+		if (clientNb >= (size_t) chan.getMaxUsers()) {
+			addToClientBuf(serv, clientFd, ERR_CHANNELISFULL(client.getNickname(), chanName));
+			return (false);
+		}
 	}
 
 	return (true);

@@ -22,6 +22,7 @@
 // JOIN //
 # define ERR_BADCHANMASK(channel) (":localhost 476 " + channel + " :Bad channel name\r\n")
 # define ERR_INVITEONLYCHAN(nick, channel) (":localhost 473 " + nick + " " + channel + " :You need an invitation to join this channel\r\n")
+# define ERR_CHANNELISFULL(nick, chan) (":localhost 471 " + nick + " " + chan + " :This channel is full (+l)\r\n")
 # define WRONGKEY(chan, nick) (":localhost " + nick + " " + chan + " :Wrong key provided\r\n")
 
 // INVITE //
