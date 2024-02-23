@@ -25,7 +25,7 @@ public:
 	std::string	&getCmd();
 	std::vector<std::string> &getParams();
 
-	void	splitMsg(std::string const &delimiter);
+	void	splitMsg();
 	void	splitParams(std::string *params);
 	void	checkCmd();
 	int		parseCmd(int cmdNmb);

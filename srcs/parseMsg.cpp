@@ -16,7 +16,7 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 	std::map<const int, Client>::iterator it = _clients.find(clientFd);
 
-	msg.splitMsg("\n");
+	msg.splitMsg();
 
 	for (std::size_t i = 0; i != msg.getSplitMsg().size(); i++)
 	{
@@ -44,12 +44,11 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 void Server::registerClient(Message &msg, int clientFd) {
 
-	msg.checkCmd();
 	if (msg.getCmd() == "PASS")
 		pass(this, msg, clientFd);
-	else if (msg.getCmd() == "NICK")
+	if (msg.getCmd() == "NICK")
 		nick(this, msg, clientFd);
-	else if (msg.getCmd() == "USER")
+	if (msg.getCmd() == "USER")
 		user(this, msg, clientFd);
 
 }
@@ -64,6 +63,7 @@ int	Message::parseCmd(int cmdNmb) {
 	std::string	cpy = _splitMsg[cmdNmb];
 	if (cpy[0] == ':') // If there's a prefix
 	{
+		_prefix.erase();
 		size_t prefixEnd = cpy.find_first_of(' ');
 		if (prefixEnd != std::string::npos)
 		{
@@ -73,6 +73,7 @@ int	Message::parseCmd(int cmdNmb) {
 	}
 
 	size_t cmdEnd = cpy.find_first_of(' ');
+	_cmd.erase();
 	if (cmdEnd == std::string::npos) // if it's a command without params
 	{
 		_cmd = cpy;
@@ -81,6 +82,8 @@ int	Message::parseCmd(int cmdNmb) {
 	}
 	else
 		_cmd.insert(0, cpy, 0, cpy.find_first_of(' '));
+
+	std::cout << _cmd << std::endl;
 
 	size_t paramsStart = cpy.find_first_not_of(' ', cmdEnd);
 	if (paramsStart != std::string::npos) {

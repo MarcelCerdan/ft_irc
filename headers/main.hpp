@@ -6,6 +6,7 @@
 # include <sys/socket.h>
 # include <netdb.h>
 # include <cstring>
+# include <sstream>
 # include <string>
 # include <cstdlib>
 # include <cstdio>

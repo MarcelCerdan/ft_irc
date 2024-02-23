@@ -28,16 +28,12 @@ std::string &Message::getCmd() { return (_cmd); }
 
 std::vector<std::string> &Message::getParams() { return (_params); }
 
-void Message::splitMsg(std::string const &delimiter) {
-	std::size_t	pos;
+void Message::splitMsg() {
 	std::string	substr;
+	std::stringstream msg(_fullMsg);
 
-	while ((pos = _fullMsg.find(delimiter)) != std::string::npos) {
-		substr = _fullMsg.substr(0, pos);
+	while (std::getline(msg, substr))
 		_splitMsg.push_back(substr);
-		_fullMsg.erase(0, pos + delimiter.length());
-	}
-
 }
 
 void Message::splitParams(std::string *params) {
@@ -45,6 +41,7 @@ void Message::splitParams(std::string *params) {
 	std::size_t posSpace;
 	std::size_t posColon;
 
+	_params.clear();
 	while ((posSpace = params->find(' ')) != std::string::npos)
 	{
 		posColon = params->find(':');
