@@ -171,38 +171,46 @@ static void applyRemoveModes(std::string removeModes, Channel &channel, Message 
 }
 
 static void displayAllModes(Server *serv, Client &client, Channel &channel, int clientFd) {
-	addToClientBuf(serv, clientFd, RPL_CHANNELMODEIS(client.getNickname(), channel.getName()));
-	addToClientBuf(serv, clientFd, "\tInvite-only : ");
+	std::string modes = "+";
+	std::string modesParams;
+
 	if (channel.getModes()[e_i])
-		addToClientBuf(serv, clientFd, "yes");
-	else
-		addToClientBuf(serv, clientFd, "no");
-	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "\tCan change Topic: ");
+		modes += "i";
 	if (channel.getModes()[e_t])
-		addToClientBuf(serv, clientFd, "Channel Operators");
-	else
-		addToClientBuf(serv, clientFd, "everyone");
-	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "\tPassword required: ");
+		modes += "t";
 	if (channel.getModes()[e_k]) {
-		addToClientBuf(serv, clientFd, "yes");
+		modes += "k";
 		if (isOperator(client, channel))
-			addToClientBuf(serv, clientFd, " password: " + channel.getPassword());
+			modesParams += channel.getPassword();
 	}
-	else
-		addToClientBuf(serv, clientFd, "no");
-	addToClientBuf(serv, clientFd, "\n");
-	addToClientBuf(serv, clientFd, "\tUser limit to channel: ");
-	if (channel.getModes()[e_l])
-		addToClientBuf(serv, clientFd, intToString(channel.getMaxUsers()));
-	else
-		addToClientBuf(serv, clientFd, "none");
-	addToClientBuf(serv, clientFd, "\r\n");
+	if (channel.getModes()[e_l]) {
+		modes += "l";
+		if (!modesParams.empty())
+			modesParams += " ";
+		modesParams += intToString(channel.getMaxUsers());
+	}
 
 	std::string creationDate = channel.getCreationDate();
 
+	addToClientBuf(serv, clientFd, RPL_CHANNELMODEIS(client.getNickname(), channel.getName(), modes, modesParams));
 	addToClientBuf(serv, clientFd, RPL_CREATIONTIME(client.getNickname(), channel.getName(), creationDate));
+}
+
+static void	displayChanges(Server *serv, Channel &channel, Client &client, Client &target, std::vector<std::string> &params, std::string &modes) {
+	std::string changesMsg = modes + " ";
+
+	for (size_t i = 2; i < params.size(); i++)
+		changesMsg += params[i] + " ";
+
+	addToClientBuf(serv, target.getSocket(), RPL_MODE(client.getNickname(), channel.getName(), changesMsg));
+}
+
+static void	iterMembers(Server *serv, Channel &channel, Client &client, std::vector<std::string> &params, std::string &modes) {
+	for (std::map<const int, Client &>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
+		displayChanges(serv, channel, client, it->second, params, modes);
+
+	for (std::vector<Client *>::iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); it++)
+		displayChanges(serv, channel, client, *(*it), params, modes);
 }
 
 void	mode(Server *serv, Message msg, int clientFd) {
@@ -234,6 +242,12 @@ void	mode(Server *serv, Message msg, int clientFd) {
 				removeModes = getRemoveModes(modes, serv, clientFd, channel.getName());
 				applySetModes(setModes, channel, msg, &paramToUse, serv, clientFd, client.getNickname());
 				applyRemoveModes(removeModes, channel, msg, &paramToUse, serv, clientFd);
+				displayAllModes(serv, client, channel, clientFd);
+				setModes = "+" + setModes;
+				if (!removeModes.empty())
+					setModes += "-" + removeModes;
+				iterMembers(serv, channel, client, msg.getParams(), setModes);
+
 			}
 			else if (modes[0] == '-') {
 				removeModes = getRemoveModes(modes, serv, clientFd, channel.getName());
@@ -244,6 +258,11 @@ void	mode(Server *serv, Message msg, int clientFd) {
 				setModes = getSetModes(modes, serv, clientFd, channel.getName());
 				applyRemoveModes(removeModes, channel, msg, &paramToUse, serv, clientFd);
 				applySetModes(setModes, channel, msg, &paramToUse, serv, clientFd, client.getNickname());
+				displayAllModes(serv, client, channel, clientFd);
+				removeModes = "-" + removeModes;
+				if (!setModes.empty())
+					removeModes += "+" + setModes;
+				iterMembers(serv, channel, client, msg.getParams(), removeModes);
 			}
 			else {
 				addToClientBuf(serv, clientFd, ERR_WRONGMODEFORMAT(channel.getName(), modes));

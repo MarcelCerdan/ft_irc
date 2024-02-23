@@ -27,7 +27,6 @@ public:
 
 	void	splitMsg();
 	void	splitParams(std::string *params);
-	void	checkCmd();
 	int		parseCmd(int cmdNmb);
 };
 

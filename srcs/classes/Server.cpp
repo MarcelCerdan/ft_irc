@@ -106,11 +106,11 @@ void Server::launchServLoop() {
 
 	signal(SIGINT, shutdown);
 
-	while (stopSignal == false) {
+	while (!stopSignal) {
 		std::vector<pollfd> newPfds;
 
 		int events = poll((pollfd *)&pfds[0], (unsigned int) pfds.size(), -1);
-		if (events < 0 && stopSignal == false) {
+		if (events < 0 && !stopSignal) {
 			std::cerr << ERR_POLL << std::endl;
 			return ;
 		}

@@ -28,6 +28,12 @@
 // INVITE //
 # define ERR_USERONCHANNEL(nick, invitedNick, chan) (":localhost 443 " + nick + " " + invitedNick + " " + chan + " :is already on channel\r\n")
 
+// MODE //
+# define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + " :No such channel\r\n")
+# define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
+# define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
+# define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
+
 /*----- COMMANDS REPLIES -----*/
 
 // JOIN //
@@ -49,12 +55,9 @@
 # define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + ":Duplicate recipients. No message delivered")
 
 // MODE //
-# define RPL_CHANNELMODEIS(nick, channel) (":localhost 324 " + nick + " " + channel + ": \n")
+# define RPL_CHANNELMODEIS(nick, channel, modes, modesParams) (":localhost 324 " + nick + " " + channel + " " + modes + " " + modesParams + "\r\n")
 # define RPL_CREATIONTIME(nick, channel, creationDate) (":locahost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
-# define ERR_NOSUCHCHANNEL(nick, channel) (":localhost 403 " + nick + " " + channel + " :No such channel\r\n")
-# define ERR_MODEUNKNOWFLAG(channel, flag) (":localhost 501 " + channel + " :Unknown MODE flag \'" + flag + "\'\r\n")
-# define ERR_WRONGMODEFORMAT(nick, modestring) (":localhost 502 " + nick + " :Wrong format for mode \'" + modestring + "\'\r\n")
-# define ERR_TOOMANYMEMBERS(nick, channel, maxClients) (":localhost " + nick + " :The number of max Users set for the channel " + channel + " is superior than the max clients in the server: " + maxClients + "\r\n")
+# define RPL_MODE(nick, chan, modes) (":" + nick + " MODE " + chan + " " + modes + "\r\n")
 
 // KICK //
 # define KICKMSG(nick, target, chan, msg) (":" + nick + " KICK " + chan + " " + target + " " + msg + "\r\n")

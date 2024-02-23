@@ -1,13 +1,11 @@
 #include "main.hpp"
 
-void	printChannelInf(Server *serv, int clientFd, Channel &channel);
+static void	printChannelInf(Server *serv, int clientFd, Channel &channel);
 static bool	existingChan(Channel &channel, Server *serv, int clientFd);
 static bool	inviteMode(Channel &channel, std::string &nick);
 static bool	checkKey(Server *serv, Message msg, std::string &chanName, size_t i, int clientFd);
 static bool	checkChan(Server *serv, int clientFd, std::string chanName);
-
-
-/* TO DO : Handle keys in channels and list of channels to join */
+static void	sendJoinMsg(Server *serv, Channel &channel, int clientFd);
 
 void join(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
@@ -44,20 +42,10 @@ void join(Server *serv, Message msg, int clientFd) {
 
 static bool	checkChan(Server *serv, const int clientFd, std::string chanName)
 {
-	Channel &chan = findChannel(serv, chanName);
-	Client &client = findClient(serv, clientFd);
 
 	if (chanName[0] != '#' || chanName.find_first_of(" ,") != std::string::npos) {
 		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(chanName));
 		return (false);
-	}
-
-	if (chan.getModes()[e_l]) {
-		size_t clientNb = chan.getChanOps().size() + chan.getMembers().size();
-		if (clientNb >= (size_t) chan.getMaxUsers()) {
-			addToClientBuf(serv, clientFd, ERR_CHANNELISFULL(client.getNickname(), chanName));
-			return (false);
-		}
 	}
 
 	return (true);
@@ -102,6 +90,14 @@ static bool	existingChan(Channel &channel, Server *serv, int clientFd)
 	if (itChanOps != channel.getChanOps().end())
 		return (true);
 
+	if (channel.getModes()[e_l]) {
+		size_t clientNb = channel.getChanOps().size() + channel.getMembers().size();
+		if (clientNb >= (size_t) channel.getMaxUsers()) {
+			addToClientBuf(serv, clientFd, ERR_CHANNELISFULL(client->getNickname(), channel.getName()));
+			return (false);
+		}
+	}
+
 	if (inviteMode(channel, client->getNickname()))
 		channel.addMember(client);
 	else
@@ -128,11 +124,11 @@ static bool	inviteMode(Channel &channel, std::string &nick)
 	return (false);
 }
 
-void	printChannelInf(Server *serv, int clientFd, Channel &channel)
+static void	printChannelInf(Server *serv, int clientFd, Channel &channel)
 {
 	Client *client = &findClient(serv, clientFd);
 
-	addToClientBuf(serv, clientFd, JOINCHANNEL(client->getNickname(), channel.getName()));
+	sendJoinMsg(serv, channel, clientFd);
 	if (channel.getTopic().empty())
 		addToClientBuf(serv, clientFd, RPL_NOTOPIC(client->getNickname(), channel.getName()));
 	else
@@ -159,4 +155,15 @@ void	printChannelInf(Server *serv, int clientFd, Channel &channel)
 	}
 	addToClientBuf(serv, clientFd, "\r\n");
 	addToClientBuf(serv, clientFd, RPL_ENDOFNAMES(client->getNickname(), channel.getName()));
+}
+
+static void	sendJoinMsg(Server *serv, Channel &channel, int clientFd) {
+	Client &client = findClient(serv, clientFd);
+	std::map<const int, Client &> &chanOps = channel.getChanOps();
+
+	for (std::map<const int, Client &>::iterator it = chanOps.begin(); it != chanOps.end(); it++)
+		addToClientBuf(serv, it->second.getSocket(), JOINCHANNEL(client.getNickname(), channel.getName()));
+
+	for (std::vector<Client *>::iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); it++)
+		addToClientBuf(serv, (*it)->getSocket(), JOINCHANNEL(client.getNickname(), channel.getName()));
 }

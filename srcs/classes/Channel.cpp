@@ -32,7 +32,7 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
 	for (int i = 0; i < 3; i++)
-		_modes[i] = other._modes[i];
+		_modes[i] = false;
 	*this = other;
 }
 
@@ -48,7 +48,7 @@ Channel &Channel::operator=(const Channel &other) {
 		_name = other._name;
 		_password = other._password;
 		_maxUsers = other._maxUsers;
-		for (int i = 0; i <= 3; i++)
+		for (int i = 0; i < 3; i++)
 			_modes[i] = other._modes[i];
 		std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	}
@@ -76,10 +76,8 @@ char* Channel::getCreationDate() { return (_creationDate); }
 void Channel::setTopic(std::string &newTopic) { _topic = newTopic; }
 
 void Channel::setPassword(std::string newPassword) {
-	std::cout << "before setting password " << _password << std::endl;
 	_password = newPassword;
-	std::cout << "after setting password " << _password << std::endl;
-	}
+}
 
 void Channel::setMode(int i, int sign) {
 	if (sign == 0)

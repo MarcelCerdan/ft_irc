@@ -35,10 +35,6 @@ int Server::parseMsg(int clientFd, Message &msg) {
 		}
 	}
 
-	std::cout << std::endl << "NICK : " << _clients.find(clientFd)->second.getNickname() << std::endl;
-	std::cout << "USER : " << _clients.find(clientFd)->second.getUsername() << std::endl;
-	std::cout << "REAL : " << _clients.find(clientFd)->second.getRealName() << std::endl;
-	std::cout << "Is registered : " << _clients.find(clientFd)->second.getIsRegistered() << std::endl;
 	return (0);
 }
 
@@ -98,29 +94,3 @@ int	Message::parseCmd(int cmdNmb) {
 	return (0);
 }
 
-	/*std::cout << PURPLE << "PREFIX : " << _prefix << std::endl
-				<< "CMD : " << _cmd << std::endl;
-	if (!_params.empty())
-	{
-		std::cout << "PARAMS : ";
-		for (std::size_t i = 0; i < _params.size(); i++)
-			std::cout << _params[i] << " | ";
-		std::cout << std::endl;
-	}
-	std::cout << "PARAMS : " << _params.size() << std::endl;
-	std::cout << RESET << std::endl;*/
-
-void	Message::checkCmd()
-{
-	if (_cmd.find("NICK") != std::string::npos && _cmd.find("PASS") != std::string::npos)
-	{
-		std::cout << "COMMAND : " << _cmd << std::endl;
-		_cmd = "NICK";
-		_params.erase(_params.begin());
-	}
-	else if (_cmd.find("USER") != std::string::npos && _cmd.find("NICK") != std::string::npos)
-	{
-		_cmd = "USER";
-		_params.erase(_params.begin());
-	}
-}
