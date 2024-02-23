@@ -1,10 +1,10 @@
 #include "main.hpp"
 
 void	printChannelInf(Server *serv, int clientFd, Channel &channel);
-bool	existingChan(Channel &channel, Server *serv, int clientFd);
-bool	inviteMode(Channel &channel, std::string &nick);
-bool	checkChanName(std::string chanName);
-bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
+static bool	existingChan(Channel &channel, Server *serv, int clientFd);
+static bool	inviteMode(Channel &channel, std::string &nick);
+static bool	checkKey(Server *serv, Message msg, std::string &chanName, size_t i, int clientFd);
+static bool	checkChanName(Server *serv, int clientFd, std::string chanName);
 
 
 /* TO DO : Handle keys in channels and list of channels to join */
@@ -12,58 +12,71 @@ bool	checkJoinParams(Message &msg, Server *serv, int clientFd);
 void join(Server *serv, Message msg, int clientFd) {
 	Client &client = findClient(serv, clientFd);
 
-	if (!checkJoinParams(msg, serv, clientFd))
+	if (msg.getParams().empty()) {
+		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
 		return ;
-
-	std::map<const std::string, Channel> &channelsList = serv->getChannels();
-	std::map<const std::string, Channel>::iterator it = channelsList.find(msg.getParams()[0]);
-
-
-	if (it == channelsList.end())
-	{
-		Channel newChannel(msg.getParams()[0], serv, clientFd);
-		serv->addChannel(newChannel);
-		channelsList = serv->getChannels();
-		it = channelsList.find(msg.getParams()[0]);
 	}
-	else if (!existingChan(it->second, serv, clientFd))
-		return;
 
-	client.addChannel(msg.getParams()[0]);
-	printChannelInf(serv, clientFd, it->second);
+	std::vector<std::string> targetChannels = splitTargets(msg.getParams()[0]);
+	std::map<const std::string, Channel> &channelsList = serv->getChannels();
+
+	for (size_t i = 0; i < targetChannels.size(); i++) {
+		if (checkChanName(serv, clientFd, targetChannels[i]) && checkKey(serv, msg, targetChannels[i], i, clientFd)) {
+			std::map<const std::string, Channel>::iterator it = channelsList.find(targetChannels[i]);
+
+			if (it == channelsList.end())
+			{
+				Channel newChannel(targetChannels[i], serv, clientFd);
+				serv->addChannel(newChannel);
+				channelsList = serv->getChannels();
+				it = channelsList.find(targetChannels[i]);
+				client.addChannel(msg.getParams()[0]);
+				printChannelInf(serv, clientFd, it->second);
+			}
+			else if (existingChan(it->second, serv, clientFd)) {
+				client.addChannel(targetChannels[i]);
+				printChannelInf(serv, clientFd, it->second);
+			}
+		}
+	}
 }
 
-bool	checkJoinParams(Message &msg, Server *serv, int clientFd)
+
+static bool	checkChanName(Server *serv, const int clientFd, std::string chanName)
 {
+	if (chanName[0] != '#' || chanName.find_first_of(" ,") != std::string::npos) {
+		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(chanName));
+		return (false);
+	}
+
+	return (true);
+
+}
+
+static bool	checkKey(Server *serv, Message msg, std::string &chanName, size_t i, const int clientFd) {
+	Channel &chan = findChannel(serv, chanName);
 	Client &client = findClient(serv, clientFd);
 
-	if (msg.getParams().empty())
-	{
-		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
+	if (!chan.getModes()[e_k])
+		return (true);
+
+	if (msg.getParams().size() == 1) {
+		addToClientBuf(serv, clientFd, WRONGKEY(chanName, client.getNickname()));
 		return (false);
 	}
 
-	if (!checkChanName(msg.getParams()[0]))
+	std::vector<std::string> keys = splitTargets(msg.getParams()[1]);
+
+	if (msg.getParams().size() == 1 || keys[i] != chan.getPassword())
 	{
-		addToClientBuf(serv, clientFd, ERR_BADCHANMASK(msg.getParams()[0]));
+		addToClientBuf(serv, clientFd, WRONGKEY(chanName, client.getNickname()));
 		return (false);
 	}
 
 	return (true);
 }
 
-bool	checkChanName(std::string chanName)
-{
-	if (chanName[0] != '#')
-		return (false);
-
-	if (chanName.find_first_of(" ,") != std::string::npos)
-		return (false);
-	return (true);
-
-}
-
-bool	existingChan(Channel &channel, Server *serv, int clientFd)
+static bool	existingChan(Channel &channel, Server *serv, int clientFd)
 {
 	Client	*client = &findClient(serv, clientFd);
 
@@ -89,7 +102,7 @@ bool	existingChan(Channel &channel, Server *serv, int clientFd)
 	return (true);
 }
 
-bool	inviteMode(Channel &channel, std::string &nick)
+static bool	inviteMode(Channel &channel, std::string &nick)
 {
 	if (!channel.getModes()[e_i])
 		return (true);

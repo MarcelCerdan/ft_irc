@@ -15,6 +15,7 @@ private:
 	bool		_isRegistered;
 	bool		_isConnected;
 	std::vector<std::string> _channels;
+	std::vector<std::string> _invitedChannels;
 
 public:
 	Client(int socket);
@@ -38,6 +39,7 @@ public:
 	std::string	&getUsername();
 	std::string &getRealName();
 	std::vector<std::string> &getChannels();
+	std::vector<std::string> getInvitedChans() const;
 	bool		&getGoodPass();
 	bool		&getIsRegistered();
 	bool		getIsConnected() const;
@@ -47,6 +49,7 @@ public:
 	void		freeReadBuffer();
 	void		addChannel(std::string const &channel);
 	void		removeChannel(std::string const &channel);
+	void		addInvitedChan(std::string const &chan);
 
 };
 

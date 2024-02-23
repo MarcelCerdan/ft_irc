@@ -22,6 +22,7 @@
 // JOIN //
 # define ERR_BADCHANMASK(channel) (":localhost 476 " + channel + " :Bad channel name\r\n")
 # define ERR_INVITEONLYCHAN(nick, channel) (":localhost 473 " + nick + " " + channel + " :You need an invitation to join this channel\r\n")
+# define WRONGKEY(chan, nick) (":localhost " + nick + " " + chan + " :Wrong key provided\r\n")
 
 // INVITE //
 # define ERR_USERONCHANNEL(nick, invitedNick, chan) (":localhost 443 " + nick + " " + invitedNick + " " + chan + " :is already on channel\r\n")
@@ -36,8 +37,9 @@
 # define RPL_ENDOFNAMES(nick, channel) (":localhost 366 " + nick + " " + channel + " :End of /NAMES list\r\n")
 
 // INVITE //
-# define RPL_INVITING(nick, invitedNick, chan) (":localhost 341 " + nick + " invited " + invitedNick + " to " + chan + "\r\n")
-# define INVITE(nick, chan) (":" + nick + " invited you to " + chan + "\r\n")
+# define RPL_INVITING(nick, invitedNick, chan) (":localhost 341 " + nick + " " + invitedNick + " " + chan + "\r\n")
+# define INVITE(nick, invitedNick, chan) (":" + nick + " INVITE " + invitedNick + " :" + chan + "\r\n")
+# define RPL_INVITELIST(nick, channels) (":localhost 336 " + nick + " " + channels + "\r\n")
 
 // PRIVMSG //
 # define ERR_CANNOTSENDTOCHAN(nick, channel) (":localhost 404 " + nick + " " + channel + " :Cannot send to channel\r\n")

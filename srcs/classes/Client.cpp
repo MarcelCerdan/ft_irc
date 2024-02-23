@@ -35,6 +35,8 @@ std::string &Client::getRealName() { return (_realName); }
 
 std::vector<std::string> &Client::getChannels() { return (_channels); }
 
+std::vector<std::string> Client::getInvitedChans() const { return (_invitedChannels); }
+
 bool Client::getIsConnected() const { return (_isConnected); }
 
 bool &Client::getGoodPass() { return (_goodPass); }
@@ -74,4 +76,8 @@ void Client::removeChannel(std::string const &channel) {
 			break ;
 		}
 	}
+}
+
+void Client::addInvitedChan(std::string const &chan) {
+	_invitedChannels.push_back(chan);
 }
