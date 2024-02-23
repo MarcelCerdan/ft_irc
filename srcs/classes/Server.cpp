@@ -158,7 +158,6 @@ void Server::newClient(std::vector<pollfd> pfds, std::vector<pollfd> &newPfds) {
 		_clients.insert(std::pair<const int, Client>(clientSocket, newClient));
 
 		std::cout << BLUE << "Server added client #" << clientSocket << RESET << std::endl;
-
 	}
 	else {
 		std::cout << RED << ERR_FULL_SERV << RESET << std::endl;
@@ -181,7 +180,7 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 		delClient(&pfds, it);
 		return ;
 	}
-	else if (readCount == 0 || !client.getIsConnected()) {
+	else if (readCount == 0) {
 		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
 		delClient(&pfds, it);
 		return ;
@@ -189,8 +188,6 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else {
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
-		//if (client.getReadBuff().find("\r\n") == std::string::npos)
-		//	client.setReadBuff("\r\n");
 		Message	msgRead(msg);
 
 		if (client.getReadBuff().find('\n') != std::string::npos)
@@ -206,9 +203,12 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 {
 	Client &client = findClient(this, it->fd);
 
-	(void) pfds;
 	sendMsg(it->fd, client.getSendBuff());
 	client.freeSendBuffer();
+	if (!client.getIsConnected()) {
+		std::cout << YELLOW << "[Server] Client #" << it->fd << " just disconnected" << RESET << std::endl;
+		delClient(&pfds, it);
+	}
 }
 
 void Server::delClient(std::vector<pollfd> *pfds, std::vector<pollfd>::iterator it) {
