@@ -191,10 +191,10 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 		client.setReadBuff(msg);
 		//if (client.getReadBuff().find("\r\n") == std::string::npos)
 		//	client.setReadBuff("\r\n");
-		Message	msgRead(msg);
-
+		
 		if (client.getReadBuff().find('\n') != std::string::npos)
 		{
+			Message	msgRead(client.getReadBuff());
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
 			if (client.getReadBuff().find('\n') != std::string::npos)
 				client.freeReadBuffer();
