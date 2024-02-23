@@ -189,9 +189,7 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 	else {
 		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
-		//if (client.getReadBuff().find("\r\n") == std::string::npos)
-		//	client.setReadBuff("\r\n");
-		
+
 		if (client.getReadBuff().find('\n') != std::string::npos)
 		{
 			Message	msgRead(client.getReadBuff());
