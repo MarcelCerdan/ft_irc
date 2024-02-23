@@ -13,6 +13,7 @@ private:
 	std::string _realName;
 	bool		_goodPass;
 	bool		_isRegistered;
+	bool		_isConnected;
 	std::vector<std::string> _channels;
 
 public:
@@ -29,6 +30,7 @@ public:
 	void	setRealName(std::string const &realName);
 	void	setGoodPass();
 	void	setIsRegister();
+	void	setIsConnected(bool newState);
 
 	std::string &getReadBuff();
 	std::string &getSendBuff();
@@ -38,6 +40,7 @@ public:
 	std::vector<std::string> &getChannels();
 	bool		&getGoodPass();
 	bool		&getIsRegistered();
+	bool		getIsConnected() const;
 	int 		getSocket();
 
 	void		freeSendBuffer();
