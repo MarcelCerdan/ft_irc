@@ -114,7 +114,6 @@ void Server::launchServLoop() {
 			std::cerr << ERR_POLL << std::endl;
 			return ;
 		}
-
 		int eventsFound = 0;
 		std::vector<pollfd>::iterator it = pfds.begin();
 		while (it != pfds.end() && eventsFound < events) {
