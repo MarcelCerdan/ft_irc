@@ -23,6 +23,7 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 	_password.clear();
 	_invites.clear();
 	_chanOps.clear();
+	_members.clear();
 	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
 
 	for (int i = 0; i <= 3; i++)
@@ -31,7 +32,7 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 
 Channel::Channel(const Channel &other) : _modes(), _maxUsers(other._maxUsers) {
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
 	*this = other;
 }
@@ -48,7 +49,7 @@ Channel &Channel::operator=(const Channel &other) {
 		_name = other._name;
 		_password = other._password;
 		_maxUsers = other._maxUsers;
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i <= 3; i++)
 			_modes[i] = other._modes[i];
 		std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
 	}

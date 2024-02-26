@@ -19,7 +19,7 @@ private:
 	std::vector<std::string>		_invites;
 	std::vector<Client *>			_members;
 	std::map<const int, Client &>	_chanOps;
-	bool							_modes[3];
+	bool							_modes[4];
 	int								_maxUsers;
 
 public:
