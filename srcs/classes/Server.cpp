@@ -91,7 +91,6 @@ void Server::start() {
 	launchServLoop();
 }
 
-//set-up to handle ctrl+c
 bool stopSignal = false;
 static void shutdown(int) { stopSignal = true; }
 

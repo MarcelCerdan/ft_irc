@@ -28,7 +28,7 @@ void join(Server *serv, Message msg, int clientFd) {
 				serv->addChannel(newChannel);
 				channelsList = serv->getChannels();
 				it = channelsList.find(targetChannels[i]);
-				client.addChannel(msg.getParams()[0]);
+				client.addChannel(targetChannels[i]);
 				printChannelInf(serv, clientFd, it->second);
 			}
 			else if (existingChan(it->second, serv, clientFd)) {
