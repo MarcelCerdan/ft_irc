@@ -21,8 +21,8 @@ void	part(Server *serv, Message msg, int clientFd) {
 		if (checkErrors(serv, splitedChannels[i], clientFd)) {
 			Channel &channel = findChannel(serv, splitedChannels[i]);
 
-			channel.eraseMember(serv, clientFd);
 			sendPartMsg(serv, clientFd, splitedChannels[i], partMsg);
+			channel.eraseMember(serv, clientFd);
 			serv->removeChannel(splitedChannels[i]);
 		}	
 	}

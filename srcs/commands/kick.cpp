@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mthibaul <mthibaul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mthibaul <mthibaul@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/20 14:42:00 by mthibaul          #+#    #+#             */
-/*   Updated: 2024/02/21 17:54:53 by mthibaul         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:20:50 by mthibaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	kick(Server *serv, Message msg, int clientFd) {
 			Client &target = getClient(serv, targets[i]);
 			Channel &channel = findChannel(serv, msg.getParams()[0]);
 
-			channel.eraseMember(serv, target.getSocket());
-
 			sendKickMsg(serv, clientFd, targets[i], msg);
+
+			channel.eraseMember(serv, target.getSocket());
 		}
 	}
 }
