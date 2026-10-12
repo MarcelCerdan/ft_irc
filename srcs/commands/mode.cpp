@@ -223,6 +223,11 @@ void	mode(Server *serv, Message msg, int clientFd) {
 	}
 
 	std::string target = msg.getParams()[0];
+	if (target == client.getNickname()) { // no user modes are supported
+		addToClientBuf(serv, clientFd, RPL_UMODEIS(client.getNickname()));
+		return ;
+	}
+
 	std::map<const std::string, Channel> &channels = serv->getChannels();
 	std::map<const std::string, Channel>::iterator itChannel = channels.find(target);
 	

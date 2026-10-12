@@ -58,6 +58,7 @@
 // MODE //
 # define RPL_CHANNELMODEIS(nick, channel, modes, modesParams) (":localhost 324 " + nick + " " + channel + " " + modes + " " + modesParams + "\r\n")
 # define RPL_CREATIONTIME(nick, channel, creationDate) (":localhost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
+# define RPL_UMODEIS(nick) (":localhost 221 " + nick + " +\r\n")
 # define RPL_MODE(nick, chan, modes) (":" + nick + " MODE " + chan + " " + modes + "\r\n")
 
 // KICK //
