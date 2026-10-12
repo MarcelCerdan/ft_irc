@@ -14,6 +14,8 @@ Server::Server(char *port, const std::string &password) : _port(port), _socket(-
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("KICK", &kick));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("QUIT", &quit));
 	_cmdList.insert(std::pair<const std::string, cmdFunction>("PART", &part));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("CAP", &cap));
+	_cmdList.insert(std::pair<const std::string, cmdFunction>("PING", &ping));
 
 }
 
@@ -121,12 +123,7 @@ void Server::launchServLoop() {
 				if (it->fd == _socket) // if the socket is the server one, we add a new client
 					newClient(pfds, newPfds);
 				else { // else if the socket is that of an existing client
-					{
-						Client &client = findClient(this, it->fd);
-						std::cout << "Register : " << client.getIsRegistered() << std::endl;
-						manageExistingConnection(pfds, it);
-
-					}// handle already existing connection
+					manageExistingConnection(pfds, it); // handle already existing connection
 				}
 			}
 			else if (it->revents & POLLOUT) { // if I can send data to the socket
@@ -184,11 +181,11 @@ void Server::manageExistingConnection(std::vector<pollfd> &pfds, std::vector<pol
 		return ;
 	}
 	else {
-		std::cout << BLUE << "[Client] Message received from client #" << it->fd << RESET << " " << msg << std::endl;
 		client.setReadBuff(msg);
 
 		if (client.getReadBuff().find('\n') != std::string::npos)
 		{
+			logTraffic(client, client.getReadBuff(), true);
 			Message	msgRead(client.getReadBuff());
 			parseMsg(it->fd, msgRead); // parse readBuff to find cmds, if client isn't registered see for NICK etc...
 			if (client.getReadBuff().find('\n') != std::string::npos)
@@ -201,6 +198,9 @@ void	Server::managePollout(std::vector<pollfd> &pfds, std::vector<pollfd>::itera
 {
 	Client &client = findClient(this, it->fd);
 
+	if (client.getSendBuff().empty() && client.getIsConnected())
+		return ;
+	logTraffic(client, client.getSendBuff(), false);
 	sendMsg(it->fd, client.getSendBuff());
 	client.freeSendBuffer();
 	if (!client.getIsConnected()) {

@@ -43,7 +43,9 @@ SRCS_LST 	= 	main.cpp \
 				commands/topic.cpp \
 				commands/quit.cpp \
 				commands/kick.cpp \
-				commands/part.cpp
+				commands/part.cpp \
+				commands/cap.cpp \
+				commands/ping.cpp
 
 OBJS 		= 	$(addprefix $(DIR_OBJS), $(SRCS_LST:.cpp=.o))
 

@@ -102,20 +102,15 @@ static bool targetIsOnChannel(int clientFd, std::string &chanName, Server *serv,
 
 static void	sendKickMsg(Server *serv, int clientFd, std::string &targetNick, Message &msg) {
 	Client &client = findClient(serv, clientFd);
-	Client &target = getClient(serv, targetNick);
 	Channel &channel = findChannel(serv, msg.getParams()[0]);
 	std::string kickMsg;
 
 	if (msg.getParams().size() > 2)
 		kickMsg = ":" + msg.getParams()[2];
 
-	for (std::map<const int, Client &>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
-		addToClientBuf(serv, it->first, KICKMSG(client.getNickname(), targetNick, msg.getParams()[0], kickMsg));
+	for (std::map<const int, Client *>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
+		addToClientBuf(serv, it->first, KICKMSG(client.getPrefix(), targetNick, msg.getParams()[0], kickMsg));
 
 	for (size_t i = 0; i < channel.getMembers().size(); i++)
-		addToClientBuf(serv, channel.getMembers()[i]->getSocket(), KICKMSG(channel.getMembers()[i]->getNickname(), targetNick, msg.getParams()[0], kickMsg));
-
-	if (!kickMsg.empty())
-		kickMsg = "for " + kickMsg;
-	addToClientBuf(serv, target.getSocket(), KICKTARGETMSG(client.getNickname(), msg.getParams()[0], kickMsg));
+		addToClientBuf(serv, channel.getMembers()[i]->getSocket(), KICKMSG(client.getPrefix(), targetNick, msg.getParams()[0], kickMsg));
 }

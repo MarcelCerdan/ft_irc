@@ -40,6 +40,10 @@ int Server::parseMsg(int clientFd, Message &msg) {
 
 void Server::registerClient(Message &msg, int clientFd) {
 
+	if (msg.getCmd() == "CAP")
+		cap(this, msg, clientFd);
+	if (msg.getCmd() == "PING")
+		ping(this, msg, clientFd);
 	if (msg.getCmd() == "PASS")
 		pass(this, msg, clientFd);
 	if (msg.getCmd() == "NICK")
@@ -78,8 +82,6 @@ int	Message::parseCmd(int cmdNmb) {
 	}
 	else
 		_cmd.insert(0, cpy, 0, cpy.find_first_of(' '));
-
-	std::cout << _cmd << std::endl;
 
 	size_t paramsStart = cpy.find_first_not_of(' ', cmdEnd);
 	if (paramsStart != std::string::npos) {

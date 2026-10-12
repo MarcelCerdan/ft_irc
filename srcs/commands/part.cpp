@@ -51,9 +51,9 @@ static void	sendPartMsg(Server *serv, int clientFd, std::string channelName, std
 	if (!msg.empty())
 		msg = " :" + msg;
 
-	for (std::map<const int, Client &>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
-		addToClientBuf(serv, it->first, PARTMSG(client.getNickname(), channelName, msg));
+	for (std::map<const int, Client *>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
+		addToClientBuf(serv, it->first, PARTMSG(client.getPrefix(), channelName, msg));
 
 	for (size_t i = 0; i < channel.getMembers().size(); i++)
-		addToClientBuf(serv, channel.getMembers()[i]->getSocket(), PARTMSG(client.getNickname(), channelName, msg));
+		addToClientBuf(serv, channel.getMembers()[i]->getSocket(), PARTMSG(client.getPrefix(), channelName, msg));
 }

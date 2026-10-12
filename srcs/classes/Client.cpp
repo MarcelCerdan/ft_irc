@@ -33,6 +33,8 @@ std::string &Client::getUsername() { return (_username); }
 
 std::string &Client::getRealName() { return (_realName); }
 
+std::string Client::getPrefix() { return (_nickname + "!" + _username + "@localhost"); }
+
 std::vector<std::string> &Client::getChannels() { return (_channels); }
 
 std::vector<std::string> Client::getInvitedChans() const { return (_invitedChannels); }

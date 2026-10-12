@@ -18,7 +18,7 @@ private:
 	std::string						_password;
 	std::vector<std::string>		_invites;
 	std::vector<Client *>			_members;
-	std::map<const int, Client &>	_chanOps;
+	std::map<const int, Client *>	_chanOps;
 	bool							_modes[4];
 	int								_maxUsers;
 
@@ -33,7 +33,7 @@ public:
 	std::string getPassword() const;
 	std::vector<std::string>		getInvites() const;
 	std::vector<Client *>			&getMembers();
-	std::map<const int, Client &>	&getChanOps();
+	std::map<const int, Client *>	&getChanOps();
 	const bool*						getModes() const;
 	int 							getMaxUsers() const;
 	char*							getCreationDate();

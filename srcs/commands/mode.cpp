@@ -150,12 +150,12 @@ static void applyRemoveModes(std::string removeModes, Channel &channel, Message 
 		}
 		else if (removeModes[i] == 'o') {
 			std::string chanOpsToChange = msg.getParams()[*paramToUse];
-			std::map<const int, Client &> &chanOps = channel.getChanOps();
+			std::map<const int, Client *> &chanOps = channel.getChanOps();
 			bool chanOpsFound = false;
 
-			for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
-				if (itChanOps->second.getNickname() == chanOpsToChange) {
-					channel.addMember(&(itChanOps->second));
+			for (std::map<const int, Client *>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
+				if (itChanOps->second->getNickname() == chanOpsToChange) {
+					channel.addMember(itChanOps->second);
 					chanOps.erase(itChanOps);
 					*paramToUse += 1;
 					chanOpsFound = true;
@@ -202,12 +202,12 @@ static void	displayChanges(Server *serv, Channel &channel, Client &client, Clien
 	for (size_t i = 2; i < params.size(); i++)
 		changesMsg += params[i] + " ";
 
-	addToClientBuf(serv, target.getSocket(), RPL_MODE(client.getNickname(), channel.getName(), changesMsg));
+	addToClientBuf(serv, target.getSocket(), RPL_MODE(client.getPrefix(), channel.getName(), changesMsg));
 }
 
 static void	iterMembers(Server *serv, Channel &channel, Client &client, std::vector<std::string> &params, std::string &modes) {
-	for (std::map<const int, Client &>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
-		displayChanges(serv, channel, client, it->second, params, modes);
+	for (std::map<const int, Client *>::iterator it = channel.getChanOps().begin(); it != channel.getChanOps().end(); it++)
+		displayChanges(serv, channel, client, *it->second, params, modes);
 
 	for (std::vector<Client *>::iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); it++)
 		displayChanges(serv, channel, client, *(*it), params, modes);

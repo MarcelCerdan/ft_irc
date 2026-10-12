@@ -38,6 +38,7 @@ public:
 	std::string	&getNickname();
 	std::string	&getUsername();
 	std::string &getRealName();
+	std::string getPrefix();
 	std::vector<std::string> &getChannels();
 	std::vector<std::string> getInvitedChans() const;
 	bool		&getGoodPass();

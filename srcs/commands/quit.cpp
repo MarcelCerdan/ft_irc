@@ -27,13 +27,13 @@ static void	sendQuitMsg (Server *serv, std::string &chanName, std::string &quitM
 	Channel &chan = findChannel(serv, chanName);
 	Client &client = findClient(serv, clientFd);
 
-	for (std::map<const int, Client &>::iterator it = chan.getChanOps().begin(); it != chan.getChanOps().end(); it++) {
-		if (it->second.getSocket() != clientFd)
-			addToClientBuf(serv, it->second.getSocket(), QUITMSG(client.getNickname(), quitMsg));
+	for (std::map<const int, Client *>::iterator it = chan.getChanOps().begin(); it != chan.getChanOps().end(); it++) {
+		if (it->second->getSocket() != clientFd)
+			addToClientBuf(serv, it->second->getSocket(), QUITMSG(client.getPrefix(), quitMsg));
 	}
 
 	for (std::vector<Client *>::iterator it = chan.getMembers().begin(); it != chan.getMembers().end(); it++) {
 		if ((*it)->getSocket() != clientFd)
-			addToClientBuf(serv, (*it)->getSocket(), QUITMSG(client.getNickname(), quitMsg));
+			addToClientBuf(serv, (*it)->getSocket(), QUITMSG(client.getPrefix(), quitMsg));
 	}
 }

@@ -50,5 +50,6 @@ Client	&getClient(Server *serv, const std::string &nick);
 Channel &findChannel(Server *serv, const std::string &chanName);
 void	addToClientBuf(Server *serv, int clientFd, std::string str);
 void	printServInfo(Server *serv, int clientFd);
+void	logTraffic(Client &client, const std::string &data, bool incoming);
 
 #endif

@@ -41,7 +41,7 @@ void invite(Server *serv, Message msg, int clientFd) {
 	channel.addInvite(msg.getParams()[0]);
 	invitedClient.addInvitedChan(channel.getName());
 	addToClientBuf(serv, clientFd, RPL_INVITING(client.getNickname(), msg.getParams()[0], msg.getParams()[1]));
-	addToClientBuf(serv, invitedClient.getSocket(), INVITE(client.getNickname(), invitedClient.getNickname(), msg.getParams()[1]));
+	addToClientBuf(serv, invitedClient.getSocket(), INVITE(client.getPrefix(), invitedClient.getNickname(), msg.getParams()[1]));
 }
 
 static void	printInvites(Server *serv, int clientFd) {

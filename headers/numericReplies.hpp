@@ -38,6 +38,7 @@
 
 // JOIN //
 # define JOINCHANNEL(nick, channel) (":" + nick + " JOIN " + channel + "\r\n")
+# define TOPICMSG(source, channel, topic) (":" + source + " TOPIC " + channel + " :" + topic + "\r\n")
 # define RPL_TOPIC(nick, channel, topic) (":localhost 332 " + nick + " " + channel + " :" + topic + "\r\n")
 # define RPL_NOTOPIC(nick, channel) (":localhost 331 " + nick + " " + channel + " :No topic is set\r\n")
 # define RPL_NAMREPLY(nick, symbol, channel) (":localhost 353 " + nick + " " + symbol + " " + channel + " :")
@@ -56,12 +57,11 @@
 
 // MODE //
 # define RPL_CHANNELMODEIS(nick, channel, modes, modesParams) (":localhost 324 " + nick + " " + channel + " " + modes + " " + modesParams + "\r\n")
-# define RPL_CREATIONTIME(nick, channel, creationDate) (":locahost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
+# define RPL_CREATIONTIME(nick, channel, creationDate) (":localhost 329 " + nick + " " + channel + " :" + creationDate + "\r\n")
 # define RPL_MODE(nick, chan, modes) (":" + nick + " MODE " + chan + " " + modes + "\r\n")
 
 // KICK //
 # define KICKMSG(nick, target, chan, msg) (":" + nick + " KICK " + chan + " " + target + " " + msg + "\r\n")
-# define KICKTARGETMSG(nick, chan, msg) (":localhost " + nick + " kicked you from " + chan + " " + msg + "\r\n")
 
 // PART //
 # define PARTMSG(nick, chan, msg) (":" + nick + " PART " + chan + msg + "\r\n")
@@ -69,15 +69,18 @@
 // QUIT //
 # define QUITMSG(nick, msg) (":" + nick + " QUIT :Quit: " + msg + "\r\n")
 
+// CAP //
+# define RPL_CAP(nick, subCmd, caps) (":localhost CAP " + nick + " " + subCmd + " :" + caps + "\r\n")
+
+// PING //
+# define PONG(token) (":localhost PONG localhost :" + token + "\r\n")
+
 /*----- REPLIES -----*/
 
 # define RPL_WELCOME(nick) (":localhost 001 " + nick + " :Welcome to our IRC server " + nick + " !\r\n")
 # define RPL_YOURHOST(nick) (":localhost 002 " + nick + " :Your host is localhost\r\n")
 # define RPL_CREATED(nick, time) (":localhost 003 " + nick + " :This server was created " + date + "\r\n")
-# define RPL_MYINFO(nick) (":localhost 004 " + nick + " server name: localhost \nAvailable user modes: \n\t-Regular users\n\t-Operators\n \
-Available channel modes : \n\t-i: Set/remove Invite-only channel\n\t-t: Set/remove the restrictions of the TOPIC command to channel \
-operators\n\t-k: Set/remove the channel key (password)\n\t-o: Give/take channel operator privilege\n\t\
--l: Set/remove the user limit to channel\r\n")
+# define RPL_MYINFO(nick) (":localhost 004 " + nick + " localhost ft_irc o itkol\r\n")
 
 #endif
 

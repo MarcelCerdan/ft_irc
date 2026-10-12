@@ -17,7 +17,7 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 	std::map<const int, Client> &clients = serv->getClients();
 	std::map<const std::string, Channel> &channels = serv->getChannels();
 
-	preMessage = ":" + client.getNickname() + " PRIVMSG ";
+	preMessage = ":" + client.getPrefix() + " PRIVMSG ";
 	message = " :" + msg.getParams()[1] + "\r\n";
 
 	std::istringstream iss(targets);
@@ -56,10 +56,10 @@ void privmsg(Server *serv, Message msg, int clientFd) {
 					addToClientBuf(serv, (*itMember)->getSocket(), preMessage + targetChannelName + message);
 			}
 
-			std::map<const int, Client &> &chanOps = itChannel->second.getChanOps();
-			for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
-				if (itChanOps->second.getSocket() != clientFd)
-					addToClientBuf(serv, itChanOps->second.getSocket(), preMessage + targetChannelName + message);
+			std::map<const int, Client *> &chanOps = itChannel->second.getChanOps();
+			for (std::map<const int, Client *>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
+				if (itChanOps->second->getSocket() != clientFd)
+					addToClientBuf(serv, itChanOps->second->getSocket(), preMessage + targetChannelName + message);
 			}
 		}
 		else

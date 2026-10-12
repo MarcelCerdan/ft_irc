@@ -24,9 +24,6 @@ void user(Server *serv, Message msg, int clientFd)
 	else if (msg.getParams().size() < 4)
 		addToClientBuf(serv, clientFd, ERR_NEEDMOREPARAMS(client.getNickname(), msg.getCmd()));
 
-	else if (msg.getParams()[1] != "0" || msg.getParams()[2] != "*")
-		addToClientBuf(serv, clientFd, "The username must be followed by '0 *' \r\n");
-
 	else
 	{
 		client.setUsername(msg.getParams()[0]);

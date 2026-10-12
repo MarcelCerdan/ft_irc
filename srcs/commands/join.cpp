@@ -79,7 +79,7 @@ static bool	existingChan(Channel &channel, Server *serv, int clientFd)
 {
 	Client	*client = &findClient(serv, clientFd);
 
-	std::map<const int, Client &>::iterator itChanOps = channel.getChanOps().find(clientFd);
+	std::map<const int, Client *>::iterator itChanOps = channel.getChanOps().find(clientFd);
 
 	for (size_t i = 0; i < channel.getMembers().size(); i++)
 	{
@@ -135,12 +135,12 @@ static void	printChannelInf(Server *serv, int clientFd, Channel &channel)
 		addToClientBuf(serv, clientFd, RPL_TOPIC(client->getNickname(), channel.getName(), channel.getTopic()));
 
 	addToClientBuf(serv, clientFd, RPL_NAMREPLY(client->getNickname(), "=", channel.getName()));
-	std::map<const int, Client &>::iterator it_chanOps = channel.getChanOps().begin();
+	std::map<const int, Client *>::iterator it_chanOps = channel.getChanOps().begin();
 	std::size_t i = 0;
 	while ( i != channel.getChanOps().size())
 	{
 		if (it_chanOps->first > 2)
-			addToClientBuf(serv, clientFd, "@" + it_chanOps->second.getNickname() + " ");
+			addToClientBuf(serv, clientFd, "@" + it_chanOps->second->getNickname() + " ");
 		it_chanOps++;
 		i++;
 	}
@@ -159,11 +159,11 @@ static void	printChannelInf(Server *serv, int clientFd, Channel &channel)
 
 static void	sendJoinMsg(Server *serv, Channel &channel, int clientFd) {
 	Client &client = findClient(serv, clientFd);
-	std::map<const int, Client &> &chanOps = channel.getChanOps();
+	std::map<const int, Client *> &chanOps = channel.getChanOps();
 
-	for (std::map<const int, Client &>::iterator it = chanOps.begin(); it != chanOps.end(); it++)
-		addToClientBuf(serv, it->second.getSocket(), JOINCHANNEL(client.getNickname(), channel.getName()));
+	for (std::map<const int, Client *>::iterator it = chanOps.begin(); it != chanOps.end(); it++)
+		addToClientBuf(serv, it->second->getSocket(), JOINCHANNEL(client.getPrefix(), channel.getName()));
 
 	for (std::vector<Client *>::iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); it++)
-		addToClientBuf(serv, (*it)->getSocket(), JOINCHANNEL(client.getNickname(), channel.getName()));
+		addToClientBuf(serv, (*it)->getSocket(), JOINCHANNEL(client.getPrefix(), channel.getName()));
 }

@@ -40,13 +40,13 @@ void topic(Server *serv, Message msg, int clientFd) {
         if (newTopic != channel.getTopic()) {
             channel.setTopic(newTopic);
             std::vector<Client *> &members = channel.getMembers();
-            std::map<const int, Client &> &chanOps = channel.getChanOps();
+            std::map<const int, Client *> &chanOps = channel.getChanOps();
 
             for (std::vector<Client *>::iterator itMember = members.begin(); itMember != members.end(); ++itMember) {
-                addToClientBuf(serv, (*itMember)->getSocket(), RPL_TOPIC((*itMember)->getNickname(), channel.getName(), channel.getTopic()));
+                addToClientBuf(serv, (*itMember)->getSocket(), TOPICMSG(client.getPrefix(), channel.getName(), channel.getTopic()));
             }
-            for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); ++itChanOps) {
-                addToClientBuf(serv, itChanOps->second.getSocket(), RPL_TOPIC(itChanOps->second.getNickname(), channel.getName(), channel.getTopic()));
+            for (std::map<const int, Client *>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); ++itChanOps) {
+                addToClientBuf(serv, itChanOps->second->getSocket(), TOPICMSG(client.getPrefix(), channel.getName(), channel.getTopic()));
             }
         }
     } else {

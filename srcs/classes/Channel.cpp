@@ -17,14 +17,16 @@ Channel::Channel(std::string &name, Server *serv, const int clientFd) : _name(na
 																		_maxUsers(-1) {
 
 	Client &client = findClient(serv, clientFd);
-	std::time_t currentTime = std::time(NULL);
+	std::ostringstream timestamp;
 
-	std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
+	timestamp << std::time(NULL);
+	std::strncpy(_creationDate, timestamp.str().c_str(), sizeof(_creationDate) - 1);
+	_creationDate[sizeof(_creationDate) - 1] = '\0';
 	_password.clear();
 	_invites.clear();
 	_chanOps.clear();
 	_members.clear();
-	_chanOps.insert(std::pair<const int, Client &>(clientFd, client));
+	_chanOps.insert(std::pair<const int, Client *>(clientFd, &client));
 
 	for (int i = 0; i <= 3; i++)
 		_modes[i] = false;
@@ -42,8 +44,6 @@ Channel::~Channel() {}
 Channel &Channel::operator=(const Channel &other) {
 	if (this != &other)
 	{
-		std::time_t currentTime = std::time(NULL);
-
 		_members = other._members;
 		_chanOps = other._chanOps;
 		_name = other._name;
@@ -51,7 +51,7 @@ Channel &Channel::operator=(const Channel &other) {
 		_maxUsers = other._maxUsers;
 		for (int i = 0; i <= 3; i++)
 			_modes[i] = other._modes[i];
-		std::strftime(_creationDate, sizeof(_creationDate), "%H:%M:%S %m-%d-%Y", std::localtime(&currentTime));
+		std::memcpy(_creationDate, other._creationDate, sizeof(_creationDate));
 	}
 	return (*this);
 }
@@ -66,7 +66,7 @@ std::vector<std::string> Channel::getInvites() const { return (_invites); }
 
 std::vector<Client *> &Channel::getMembers() { return (_members); }
 
-std::map<const int, Client &> &Channel::getChanOps() { return (_chanOps); }
+std::map<const int, Client *> &Channel::getChanOps() { return (_chanOps); }
 
 const bool* Channel::getModes() const { return (_modes); };
 
@@ -101,7 +101,7 @@ void Channel::addMember(Client *newMember) {
 
 void Channel::addChanOps(const int clientFd, Client &newChanOps) {
 
-	_chanOps.insert(std::pair<const int, Client &>(clientFd, newChanOps));
+	_chanOps.insert(std::pair<const int, Client *>(clientFd, &newChanOps));
 }
 
 void Channel::eraseMember(Server *serv, int clientFd) {

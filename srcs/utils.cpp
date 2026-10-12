@@ -56,6 +56,29 @@ int	sendMsg(int const clientFd, std::string &buf)
 	return (ret);
 }
 
+// Print every IRC line of data, one per row: "->" received from the client, "<-" sent to it
+void	logTraffic(Client &client, const std::string &data, bool incoming)
+{
+	std::string who = "#" + intToString(client.getSocket());
+	if (!client.getNickname().empty())
+		who += " " + client.getNickname();
+
+	std::istringstream stream(data);
+	std::string line;
+	while (std::getline(stream, line)) {
+		if (!line.empty() && line[line.size() - 1] == '\r')
+			line.erase(line.size() - 1);
+		if (line.empty())
+			continue ;
+		if (incoming && line.compare(0, 5, "PASS ") == 0)
+			line = "PASS ****";
+		if (incoming)
+			std::cout << CYAN << "[" << who << "] -> " << RESET << line << std::endl;
+		else
+			std::cout << GREY << "[" << who << "] <- " << line << RESET << std::endl;
+	}
+}
+
 void	printServInfo(Server *serv, int clientFd)
 {
 	Client &client = findClient(serv, clientFd);
@@ -98,9 +121,9 @@ void printChannelInfo(Channel &channel) {
     }
     std::cout << std::endl;
 
-    const std::map<const int, Client &> &chanOps = channel.getChanOps();
-    for (std::map<const int, Client &>::const_iterator it = chanOps.begin(); it != chanOps.end(); ++it) {
-        std::cout << it->second.getNickname() << " ";
+    const std::map<const int, Client *> &chanOps = channel.getChanOps();
+    for (std::map<const int, Client *>::const_iterator it = chanOps.begin(); it != chanOps.end(); ++it) {
+        std::cout << it->second->getNickname() << " ";
     }
     std::cout << std::endl;
 }
@@ -108,9 +131,9 @@ void printChannelInfo(Channel &channel) {
 
 bool isOperator(Client &client, Channel &channel) {
 	std::string clientName = client.getNickname();
-	std::map<const int, Client &> &chanOps = channel.getChanOps();
-	for (std::map<const int, Client &>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
-		if (itChanOps->second.getNickname() == clientName)
+	std::map<const int, Client *> &chanOps = channel.getChanOps();
+	for (std::map<const int, Client *>::iterator itChanOps = chanOps.begin(); itChanOps != chanOps.end(); itChanOps++) {
+		if (itChanOps->second->getNickname() == clientName)
 			return (true);
 	}
 	return (false);
